@@ -41,14 +41,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
   function randomWaifu() {
     function checkIfEmpty(result) {
       if (result === true) {
-        document.querySelector('.waifuBox').innerHTML = '<button id="newWaifu" class="newWaifuPage">+</button>';
+        document.querySelector('.sMiddle').innerHTML = '<h2>Wie es aussieht, haben Sie noch keine Waifus angelegt:</h2><button id="newWaifu" class="newWaifuPage">+</button>';
       } else {
         let pfad = "src/waifus/";
         let waifus = fs.readdirSync(pfad);
-        let waifu = waifus[Math.floor(Math.random() * waifus.length)];
+        let waifu = pfad + waifus[Math.floor(Math.random() * waifus.length)] + "/";
         console.log(waifu);
-        console.log('Test');
-        console.log('Test2');
+
+        document.querySelector('.sMiddle').innerHTML = waifu;
       }
     }
 

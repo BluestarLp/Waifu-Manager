@@ -23,6 +23,14 @@ h1 {
   font-weight: 500;
 }
 
+h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: white;
+}
+
 :root {
   --backgroundColor: rgb(52, 73, 94); /*rgb(34, 87, 139);*/
   --sideBarLength: clamp(180px, 25%, 220px);
