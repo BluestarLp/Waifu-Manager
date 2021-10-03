@@ -1,0 +1,57 @@
+<div class="contentWrapper addWaifu">
+    <div class="form">
+        <h1>Neue Waifu:</h1>
+        <div class="formContainer">
+            <div>
+                <h2><span style="color: rgb(245, 89, 89); font-size: 1rem;">*</span> Pflichtfelder</h2>
+            </div>
+            <div class="bildauswahlContainer">
+                <label for="bildauswahl">Bild:</label>
+                <div class="ProfilbildContainer">
+                  <img src="images/standard-avatar.png">  
+                  <img src="" class="Profilbild">
+                </div>
+                <input type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" onchange="validateFileType()" id="bildauswahl">
+            </div>
+            <div>
+                <label for="vorname" class="required">Vorname:</label>
+                <input type="text" id="vorname" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" required>
+            </div>
+            <div>
+                <label for="nachname" class="required">Nachname:</label>
+                <input type="text" id="nachname" onkeydown="if(['Space'].includes(arguments[0].code)){return false;}" required>
+            </div>
+            <div>
+                <label for="geburtsdatum">Geburtsdatum:</label>
+                <input type="date" id="geburtsdatum">
+            </div>
+            <div>
+                <label for="alter">Alter:</label>
+                <input type="number" id="alter">
+            </div>
+            <div>
+                <label for="augenfarbe">Augenfarbe:</label>
+                <input type="text" id="augenfarbe">
+            </div>
+            <div>
+                <label for="haarfarbe">Haarfarbe:</label>
+                <input type="text" id="haarfarbe">
+            </div>
+            <div>
+                <label for="accentCheckbox">Lieblingsfarbe/Accentfarbe:</label>
+                <span>Wollen Sie eine Accentfarbe verwenden? <input type="checkbox" id="accentCheckbox" onclick="Checkbox()"></span>
+                <input type="color" id="lieblingsfarbe" style="display: none;">
+            </div>
+            <div>
+                <label for="favorit">Favorit:</label>
+                <span style="text-align: center;">Ja/Nein <input type="checkbox" id="favorit" style="margin-left: 0.4rem;"></span>
+            </div>
+            <div>
+                <label for="beschreibung">Beschreibung:</label>
+                <textarea name="beschreibung" id="beschreibung" cols="30" rows="10"></textarea>
+            </div>
+        </div>   
+    </div>
+    <button class="speichern">Speichern</button>
+    <div class="GenWarnung" style="display: none;"></div>
+</div>

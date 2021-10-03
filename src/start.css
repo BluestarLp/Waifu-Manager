@@ -1,0 +1,69 @@
+.sTop {
+    min-height: 20%;
+    color: white;
+}
+
+h2 {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.sTop h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.sMiddle {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border-top: 2px dotted white;
+    padding-top: 1rem;
+}
+
+#newWaifu {
+    padding: 1rem;
+    width: 10rem;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-size: 2rem;
+    background-color: darkgrey;
+    color: white;
+}
+
+#newWaifu:hover {
+    filter: brightness(110%);
+}
+
+.sFooter {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    border-top: 2px dotted white;
+    padding: 1rem 0;
+    color: white;
+}
+
+.sFooter a {
+    color: white;
+    text-decoration: none;
+}
+
+.sFooter a:hover {
+    text-decoration: underline;
+}
+
+.sFooter > div {
+    width: max-content;
+}

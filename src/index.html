@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waifu - Manager</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="start.css">
+    <link rel="stylesheet" href="waifuliste.css">
+    <link rel="stylesheet" href="addwaifu.css">
+    <link rel="stylesheet" href="viewwaifu.css">
+    <script defer src="sidebar-navigation.js"></script> 
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <aside class="sidebar">
+        <div class="logo">
+          <img src="images/icon.png">
+          <span>Waifu - Manager</span>
+        </div>
+        <div class="button-container">
+          <button id="start" class="link active"><img id="button-icon" src="images/home.svg"> <span>Start</span></button>
+          <button id="waifuListe" class="link"><img id="button-icon" src="images/list.svg"> <span>Waifu-Liste</span></button>
+          <button id="tierListe" class="link"><img id="button-icon" src="images/tier-list.svg"> <span>Tier-Liste</span></button>
+          <button id="bilderGallerie" class="link"><img id="button-icon" src="images/picture.svg"> <span>Gallerie</span></button>
+        </div>
+        <div class="sidebar-bottom">
+          <img id="settings" src="images/settings.svg" alt="Einstellungen">
+          <img id="info" src="images/info.svg" alt="Informationen">
+        </div>
+      </aside>
+      <div id="popup">
+        <div id="settingsMenu">
+          <span id="close">X</span>
+        </div>
+        <div id="infoMenu">
+          <span id="close">X</span>
+        </div>
+      </div>
+      <div id="contentContainer">
+       <div class="contentWrapper start">
+          <div class="sTop">
+            <h1>Willkomen zurück!</h1>
+            <h2>Verwalten Sie Ihre Waifus so gut wie noch nie!</h2>
+          </div>
+          <div class="sMiddle">
+            <h2>Wie es aussieht, haben Sie noch keine Waifus angelegt:</h2>
+            <div class="waifuBox">
+             <button id="newWaifu" class="newWaifuPage">+</button>
+           </div>
+          </div>
+          <div class="sFooter">
+            <div>
+              <span>© <a target="_blank" href="https://steamcommunity.com/profiles/76561198286277324/">BluestarLp</a></span>   
+            </div>
+            <div>
+              <span>🌐 <a target="_blank" href="#">Unsere Website</a></span>
+            </div>
+          </div>
+        </div>        
+        </div>
+      </div> 
+    </div>
+  </body>
+</html>
