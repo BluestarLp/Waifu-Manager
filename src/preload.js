@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let waifu = waifus[Math.floor(Math.random() * waifus.length)];
         console.log(waifu);
         console.log('Test');
+        console.log('Test2');
       }
     }
 
