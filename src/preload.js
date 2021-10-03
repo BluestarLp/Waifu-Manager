@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let waifus = fs.readdirSync(pfad);
         let waifu = waifus[Math.floor(Math.random() * waifus.length)];
         console.log(waifu);
+        console.log('Test');
       }
     }
 
