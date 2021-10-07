@@ -43,12 +43,41 @@ document.addEventListener("DOMContentLoaded", (event) => {
       if (result === true) {
         document.querySelector('.sMiddle').innerHTML = '<h2>Wie es aussieht, haben Sie noch keine Waifus angelegt:</h2><button id="newWaifu" class="newWaifuPage">+</button>';
       } else {
+        
         let pfad = "src/waifus/";
         let waifus = fs.readdirSync(pfad);
-        let waifu = pfad + waifus[Math.floor(Math.random() * waifus.length)] + "/";
+        let i = Math.floor(Math.random() * waifus.length);
+        let waifu = pfad + waifus[i] + "/";
+        
         console.log(waifu);
 
-        document.querySelector('.sMiddle').innerHTML = waifu;
+        let daten = fs.readFileSync(waifu + "daten.json", "utf8", (err, data) => {
+          return data;
+        })
+
+        daten = JSON.parse(daten);
+
+        let Profilbild = (daten.bild === true) ? "waifus/" + waifus[i] + "/profilbild.png" : "";
+        let Vorname = daten.vorname;
+        let Nachname = daten.nachname;
+
+        document.querySelector('.sMiddle').innerHTML = `
+          <div class="waifuWrapper">
+              <div class="profilbild">
+                <img src="images/standard-avatar.png">
+                <img src="${Profilbild}">
+              </div>
+              <div class="information">
+                <div class="name">
+                  <span class="queryname">${Vorname} ${Nachname}</span>
+                  <div class="">
+
+                  </div>
+                </div>
+                <button id="startProfil" class="profil"><span style="display: none;">${Vorname.toLowerCase()}-${Nachname.toLowerCase()}</span>Profil</button>
+              </div>
+            </div>
+        `;
       }
     }
 
@@ -65,8 +94,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
   randomWaifu();
 
   contentContainer.addEventListener("click", (e) => {
-    if (e.target.classList.contains("waifuCard")) {
-      let a = e.target.firstChild.innerHTML;
+    if (e.target.classList.contains("profil")) {
+      showWaifu(e);
+    }
+  })
+
+  function showWaifu(e) {
+    let a = e.target.firstChild.innerHTML;
       let pfad = "src/waifus/" + a + "/";
       let datenDatei = fs.readFileSync(pfad + "daten.json", "utf-8", (err, data) => {
         if (err) {
@@ -89,7 +123,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
       }
 
-      let Profilbild = "waifus/" + a + "/profilbild.png";
+      let Profilbild = (daten.bild === true) ? "waifus/" + a + "/profilbild.png" : "";
       let Vorname = daten.vorname;
       let Nachname = daten.nachname;
       let Geburtsdatum = daten.geburtsdatum;
@@ -102,7 +136,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.log(daten);
       let inhalt = `
         <div class="contentWrapper viewWaifu" style="--akzentFarbe: var(--backgroundColor);">
-          <h1>Waifu: ${Vorname}  ${Nachname}</h1>
+          <h1>Waifu: ${Vorname} ${Nachname}</h1>
           <div class="informationContainer">
               <div class="dataContainer1">
                 <div class="waifuPicture">
@@ -155,7 +189,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
         `;
       contentContainer.innerHTML = inhalt;
       console.log(a);
+  }
+
+  contentContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("waifuCard")) {
+      showWaifu(e);
     } else {
+
     }
   });
 
@@ -232,20 +272,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
     switch (Type) {
       case 0: //Pflichtfelder
         GenWarnung.style.display = "block";
-        GenWarnung.innerHTML +=
-          "<span>Nicht alle Pflichtfelder wurden ausgefüllt!</span>";
+        GenWarnung.innerHTML += "<span>Nicht alle Pflichtfelder wurden ausgefüllt!</span>";
         window.scrollTo(0, document.body.scrollHeight);
         break;
       case 1: //Ordner/Waifu existiert bereits
         GenWarnung.style.display = "block";
-        GenWarnung.innerHTML +=
-          "<span>Eine Waifu unter diesem Namen existiert bereits!</span>";
+        GenWarnung.innerHTML += "<span>Eine Waifu unter diesem Namen existiert bereits!</span>";
         window.scrollTo(0, document.body.scrollHeight);
         break;
       case 2: //Unerwartetes Problem
         GenWarnung.style.display = "block";
-        GenWarnung.innerHTML +=
-          "<span>Ein unerwartetes Problem ist aufgetreten: \n ${Error}</span>";
+        GenWarnung.innerHTML += "<span>Ein unerwartetes Problem ist aufgetreten: \n ${Error}</span>";
         break;
     }
   }
