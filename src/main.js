@@ -15,9 +15,12 @@ const createWindow = () => {
    mainWindow = new BrowserWindow({
     width: 900,
     height: 700,
-    minWidth: 600,
-    minHeight: 500,
+    minWidth: 650,
+    minHeight: 550,
     icon: path.join(__dirname, 'images/icon.png'),
+    autoHideMenuBar: true,
+    titleBarStyle: 'hidden',
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname,'preload.js'),
       contextIsolation: true
@@ -31,6 +34,16 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
   ipcMain.on('devTools', () => {
     mainWindow.webContents.openDevTools();
+  })
+
+  //Event Listeners
+
+  mainWindow.on('maximize', () => {   
+    mainWindow.webContents.send('IsMaximized');
+  })
+  
+  mainWindow.on('unmaximize', () => {
+    mainWindow.webContents.send('IsUnmaximized');
   })
 };
 
@@ -76,3 +89,20 @@ app.on('web-contents-created', (event, contents) => {
   Eigene Dinge
 -----------------------------------------------*/
 
+//Script Kommunikation
+
+ipcMain.on('quit', () => {
+  app.quit();
+})
+
+ipcMain.on('maximize', () => {
+  mainWindow.maximize();
+})
+
+ipcMain.on('unmaximize', () => {
+  mainWindow.unmaximize();
+})
+
+ipcMain.on('minimize', () => {
+  mainWindow.minimize();
+})

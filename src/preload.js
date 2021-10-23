@@ -1,11 +1,44 @@
 const electron = require("electron");
 const fs = require("fs");
 const emptyDir = require("empty-dir");
+const { ipcRenderer } = require("electron");
 
 document.addEventListener("DOMContentLoaded", (event) => {
   //Variablen SemiGlobal
 
   const contentContainer = document.getElementById("contentContainer");
+
+  //Menüband
+  
+  function SwitchMaximizedStatus() {
+    document.getElementById('maximize').classList.toggle('maximized');
+  }
+
+  ipcRenderer.on('IsMaximized' , () => {
+    SwitchMaximizedStatus();
+    document.getElementById('maximize').querySelector('img').src = "images/unmaximized-white.png";
+  })
+
+  ipcRenderer.on('IsUnmaximized', () => {
+    SwitchMaximizedStatus();
+    document.getElementById('maximize').querySelector('img').src = "images/maximize-white.png";
+  })
+
+  document.getElementById("quit").addEventListener("click", () => {
+    ipcRenderer.send('quit');
+  });
+
+  document.getElementById("maximize").addEventListener("click", () => {
+    if (document.getElementById('maximize').classList.contains('maximized')) {
+      ipcRenderer.send('unmaximize');
+    } else {
+      ipcRenderer.send('maximize');
+    }    
+  });
+
+  document.getElementById("minimize").addEventListener("click", () => {
+    ipcRenderer.send('minimize');
+  });
 
   //Navigaton
 
@@ -99,6 +132,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
   })
 
+  function formatDate(date) {
+    let datum = date;
+    let erstesMinus = datum.indexOf("-");
+    let zweitesMinus = datum.indexOf("-", erstesMinus + 1);
+    let jahr = datum.slice(0, erstesMinus);
+    let monat = datum.slice(erstesMinus + 1, zweitesMinus);
+    let tag = datum.slice(zweitesMinus + 1);
+    let NeuesDatum = tag + "." + monat + "." + jahr;
+    console.log(NeuesDatum);
+    return NeuesDatum;
+  }
+
   function showWaifu(e) {
     let a = e.target.firstChild.innerHTML;
       let pfad = "src/waifus/" + a + "/";
@@ -126,7 +171,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let Profilbild = (daten.bild === true) ? "waifus/" + a + "/profilbild.png" : "";
       let Vorname = daten.vorname;
       let Nachname = daten.nachname;
-      let Geburtsdatum = daten.geburtsdatum;
+      let Geburtsdatum = formatDate(daten.geburtsdatum);
       let Alter = daten.alter;
       let Augenfarbe = daten.augenfarbe;
       let Haarfarbe = daten.haarfarbe;
@@ -273,12 +318,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
       case 0: //Pflichtfelder
         GenWarnung.style.display = "block";
         GenWarnung.innerHTML += "<span>Nicht alle Pflichtfelder wurden ausgefüllt!</span>";
-        window.scrollTo(0, document.body.scrollHeight);
+        contentContainer.scrollTo(0, document.querySelector('.contentWrapper').scrollHeight);
         break;
       case 1: //Ordner/Waifu existiert bereits
         GenWarnung.style.display = "block";
         GenWarnung.innerHTML += "<span>Eine Waifu unter diesem Namen existiert bereits!</span>";
-        window.scrollTo(0, document.body.scrollHeight);
+        contentContainer.scrollTo(0, document.querySelector('.contentWrapper').scrollHeight);
         break;
       case 2: //Unerwartetes Problem
         GenWarnung.style.display = "block";
@@ -350,7 +395,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
               });
             }
           });
-        }
+        
 
         //Profilbild
 
@@ -369,10 +414,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
               return;
             }
           });
+          ClickWaifuList();
         } else {
           console.log("Kein Bild hinzugefügt!");
+          ClickWaifuList();
         }
-
+       }
         function TestBild() {
           let profilbild = document.querySelector(".Profilbild").src;
           let profilbildTest = profilbild.substr(profilbild.length - 10); // = index.html, da src = ""  
@@ -384,7 +431,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           }
         }
 
-        document.getElementById('waifuListe').click();
+        function ClickWaifuList() {
+          document.getElementById('waifuListe').click();
+        }       
+        
       } else {
         console.log("Pflichtfelder nicht ausgefüllt");
         ErrorHandling(0);

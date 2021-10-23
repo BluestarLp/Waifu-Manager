@@ -110,13 +110,17 @@
     text-overflow: ellipsis;
 }
 
+.waifuCard > span > span:hover {
+    background-color: red;
+}
+
 .waifuCard:hover > span {
     bottom: 0;
     opacity: 1;
 }
 
 .waifuCard:hover > span:hover {
-    background-color: rgba(0,0,0, 0.9);
+    background-color: red/*rgba(0,0,0, 0.9)*/;
 }
 
 .waifuCard::before {
@@ -135,10 +139,10 @@
     rgba(255,255,255, 0.2) 75%,
     rgba(0,0,0, 0) 100%);
     transform: skewX(135deg); 
-    animation: shining 1s infinite;
+    animation: glanz 1s infinite;
 }
 
-@keyframes shining {
+@keyframes glanz {
     0% {
         opacity: 0.9;
     }

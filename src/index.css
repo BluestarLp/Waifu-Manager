@@ -9,13 +9,19 @@
 }
 
 html,
+body,
+#wrapper {
+  overflow-y: hidden;
+}
+
+html,
 body {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--menuBarHeigth));
   scroll-behavior: smooth;
 }
 
 #wrapper {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--menuBarHeigth));
 }
 
 h1 {
@@ -37,7 +43,60 @@ h2 {
   --sideBarLengthSmall: clamp(100px, 20%, 160px);
   --borderDotted: 2px dotted white;
   --activeNav: rgb(74, 93, 110);
+  --menuBarHeigth: 30px;
 }
+
+/* Menüband */
+
+header:not(#contentContainer header) {
+  width: 100%;
+  background-color: var(--backgroundColor);
+  border-bottom: 1px solid white;
+  display: flex;
+  justify-content: space-between;
+  height: var(--menuBarHeigth);
+}
+
+.menuLeft {
+  display: flex;
+}
+
+.menuRight {
+  display: flex;
+}
+
+.menuRight > div {
+  height: 30px;
+  width: 40px;
+  overflow: hidden;
+  padding: 5px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-app-region: no-drag;
+  background-color: var(--backgroundColor);
+  border-bottom: 1px solid white;
+  color: white;
+}
+
+#minimize:hover,
+#maximize:hover {
+  filter: brightness(120%);
+}
+
+#quit:hover {
+  background-color: #d41324;
+}
+
+#quit:hover img {
+  filter: brightness(120%);
+}
+
+.menuRight > div > img {
+  width: 100%;
+  height: 100%;
+}
+
 
 /* Scrollbar*/
 
@@ -68,7 +127,6 @@ Seitennavigation
 .sidebar {
   position: fixed;
   left: 0;
-  top: 0;
   bottom: 0;
   z-index: 100;
   width: var(--sideBarLength);
@@ -77,7 +135,7 @@ Seitennavigation
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  height: 100vh;
+  height: calc(100vh - var(--menuBarHeigth));
   border-right: 2px solid white;
 }
 
@@ -198,10 +256,29 @@ Seitennavigation
 }
 
 #contentContainer {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--menuBarHeigth));
   padding-left: var(--sideBarLength);
-  background-color: var(--backgroundColor);
+  background-color: var(--backgroundColor);  
+  border-right: 1px solid var(--backgroundColor);
+  display: flex;
+}
+
+.contentWrapper {
+  padding: 1rem;
+  height: calc(100vh - var(--menuBarHeigth));
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  transition: transform 500ms;
   overflow-y: auto;
+  border-right: 1px solid var(--backgroundColor);
+}
+
+.filler {
+  width: 1px;
+  height: calc(100vh - var(--menuBarHeigth));
+  display: none;
+  background-color: var(--backgroundColor);
 }
 
 /*--------------------------------
@@ -231,14 +308,6 @@ Menü + Info Popup
   color: white;
   cursor: pointer;
   font-size: 1.2rem;
-}
-
-.contentWrapper {
-  padding: 1rem;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: transform 500ms;
 }
 
 @media screen and (max-width: 800px) {
