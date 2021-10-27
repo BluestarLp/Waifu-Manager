@@ -74,7 +74,7 @@
     border-radius: 0.4rem;
 }
 
-.waifuCard > * {
+.waifuCard > span > * {
     pointer-events: none;
 }
 
@@ -100,7 +100,7 @@
     height: 30px;
     transition: bottom 250ms, opacity 250ms, background-color 250ms;
     opacity: 0.0;
-    background-color: rgba(0,0,0, 0.7);
+    background-color: rgba(0,0,0, 0.75);
     padding: 0.2rem;
 }
 
@@ -110,17 +110,13 @@
     text-overflow: ellipsis;
 }
 
-.waifuCard > span > span:hover {
-    background-color: red;
-}
-
 .waifuCard:hover > span {
     bottom: 0;
     opacity: 1;
 }
 
 .waifuCard:hover > span:hover {
-    background-color: red/*rgba(0,0,0, 0.9)*/;
+    background-color: rgba(0,0,0, 0.9);
 }
 
 .waifuCard::before {

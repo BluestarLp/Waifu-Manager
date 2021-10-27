@@ -1,4 +1,3 @@
-const electron = require("electron");
 const fs = require("fs");
 const emptyDir = require("empty-dir");
 const { ipcRenderer } = require("electron");
@@ -7,6 +6,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
   //Variablen SemiGlobal
 
   const contentContainer = document.getElementById("contentContainer");
+
+  //Funktionen
+
+  function scrollToElement(element) {
+    element.scrollIntoView({block: "start", behavior: "smooth"});
+  }
 
   //Menüband
   
@@ -146,6 +151,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   function showWaifu(e) {
     let a = e.target.firstChild.innerHTML;
+    a = a.replace("<span>",""); // Anfang span klick
+    a = a.replace("</span>","");
+    a = a.replace(" ", "-");
+    a = a.toLowerCase();
+    a = a.trim(); // Ende
       let pfad = "src/waifus/" + a + "/";
       let datenDatei = fs.readFileSync(pfad + "daten.json", "utf-8", (err, data) => {
         if (err) {
@@ -239,8 +249,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
   contentContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("waifuCard")) {
       showWaifu(e);
-    } else {
-
+    } else if (e.target.classList.contains("profil2")) {
+      showWaifu(e);
     }
   });
 
@@ -264,7 +274,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let vorname = information.vorname;
       let nachname = information.nachname;
       let bildpfad = (information.bild === true) ? "waifus/" + waifu + "/profilbild.png" : "";
-      let CardTemplate = "<div class='waifuCard'><span style='display: none;'>" + vorname.toLowerCase() +  "-" + nachname.toLowerCase() + "</span><img src='images/standard-avatar.png'>" + "<img src=" + bildpfad + ">" + "<span><span>" + vorname + " " + nachname + "</span></span></div>";
+      let CardTemplate = "<div class='waifuCard'><span style='display: none;'>" + vorname.toLowerCase() +  "-" + nachname.toLowerCase() + "</span><img src='images/standard-avatar.png'>" + "<img src=" + bildpfad + ">" + "<span class='profil2'><span>" + vorname + " " + nachname + "</span></span></div>";
       if (information.favorit === true) {
         document.querySelector(".favoriteContainer").innerHTML += CardTemplate;
         document.querySelector(".waifuListContainer").innerHTML += CardTemplate;
@@ -318,7 +328,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
       case 0: //Pflichtfelder
         GenWarnung.style.display = "block";
         GenWarnung.innerHTML += "<span>Nicht alle Pflichtfelder wurden ausgefüllt!</span>";
-        contentContainer.scrollTo(0, document.querySelector('.contentWrapper').scrollHeight);
+        //contentContainer.scrollTo(0, document.querySelector('.contentWrapper').scrollHeight);
+        let div = document.querySelector('.GenWarnung');
+        scrollToElement(div);
         break;
       case 1: //Ordner/Waifu existiert bereits
         GenWarnung.style.display = "block";
