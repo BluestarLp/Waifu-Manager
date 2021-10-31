@@ -131,6 +131,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   randomWaifu();
 
+  //WaifuListe
+
   contentContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("profil")) {
       showWaifu(e);
@@ -398,6 +400,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
               console.error(err);
             } else {
               console.log("Ordner erstellt!");
+              fs.mkdirSync(folder + "/bilder", (err) => {
+                if (err) {
+                  console.error(err);
+                }
+              }) 
               let datenJSON = folder + "/daten.json";
               fs.writeFile(datenJSON, daten, (err) => {
                 if (err) {
@@ -444,7 +451,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
 
         function ClickWaifuList() {
-          document.getElementById('waifuListe').click();
+          setTimeout(document.getElementById('start').click(), 1000);
         }       
         
       } else {
@@ -454,5 +461,92 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
   });
 
-  //WaifuListe
+  // Gallerie
+
+  contentContainer.addEventListener("click", (e) => {
+    if(e.target.classList.contains("loadimages")) {
+      LoadImages(20);
+    }
+  })
+
+  function LoadImages(bilderanzahl) {
+    let waifus = fs.readdirSync("src/waifus/");
+    let bilder = [];
+    for (let i = 0; i < waifus.length; i++) {
+      let bildordner = fs.readdirSync("src/waifus/" + waifus[i] + "/bilder/");
+      for (let x = 0; x < bildordner.length; x++) {
+        let bildpfad = "waifus/" + waifus[i] + "/bilder/" + bildordner[x];
+        bilder.push(bildpfad);
+      }
+    }
+    let bilderWrapper = document.querySelector(".bilderWrapper");
+    let row = bilderWrapper.querySelectorAll(".row");
+    let pixellimit = 1000;
+    let i = 0;
+    let x = 0;
+    let l = 2;
+
+    function zusatzSeiten() {
+      
+      
+      while (i !== bilder.length) {
+        if (bilder.length - bilderanzahl * l !== 0) {
+          l++
+        }
+        document.querySelector('.bilderContainer').innerHTML += `
+      <div class="bilderWrapper">
+        <div class="row">
+          
+        </div>
+        <div class="row">
+          
+        </div>
+        <div class="row">
+          
+        </div>
+        <div class="row">
+          
+        </div>
+      </div>            
+      `;
+      }
+    }
+
+    while (pixellimit > row[0].clientHeight || pixellimit > row[1].clientHeight || pixellimit > row[2].clientHeight || pixellimit > row[3].clientHeight) {
+      
+      if (pixellimit > row[0].clientHeight && x === 0) {
+        row[0].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
+        i++
+      } else if (pixellimit > row[1].clientHeight && x === 1) {
+        row[1].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
+        i++
+      } else if (pixellimit > row[2].clientHeight && x === 2) {
+        row[2].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
+        i++
+      } else if (pixellimit > row[3].clientHeight && x === 3) {
+        row[3].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
+        i++
+      }
+
+      if (x < 3) {
+        x++
+      } else {
+        x = 0;
+      }
+      
+      if (i === bilder.length || i === bilderanzahl) {
+        console.log("ENDE", "Bilder gesamt: " + bilder.length, "Eingefügte Bilder: " + i);
+        for (let y = 0; y < bilderWrapper.querySelectorAll('img').length; y++) {
+          bilderWrapper.querySelectorAll('img')[y].onload = (e) => {
+            setTimeout(e.target.style.opacity = 1, 1000);
+          }
+        }
+
+        if (i !== bilder.length) {
+          zusatzSeiten();
+        }
+        break;
+      }
+    }
+  }
 });

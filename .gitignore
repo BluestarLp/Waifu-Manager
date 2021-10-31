@@ -39,6 +39,7 @@ jspm_packages/
 # waifus
 src/waifus/*
 src/images/gimp/
+src/test/*
 *.xcf
 # TypeScript v1 declaration files
 typings/

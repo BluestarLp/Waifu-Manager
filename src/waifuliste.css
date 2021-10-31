@@ -74,7 +74,8 @@
     border-radius: 0.4rem;
 }
 
-.waifuCard > span > * {
+.waifuCard > span > *,
+.waifuCard > *:not(span) {
     pointer-events: none;
 }
 

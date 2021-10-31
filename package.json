@@ -42,10 +42,12 @@
     }
   },
   "dependencies": {
+    "ansi-regex": "^6.0.1",
     "browserify": "^17.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "empty-dir": "^2.0.0",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "v8-compile-cache": "^2.3.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.59",
@@ -53,6 +55,6 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.59",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.59",
     "@electron-forge/maker-zip": "^6.0.0-beta.59",
-    "electron": "^13.1.8"
+    "electron": "^13.6.1"
   }
 }
