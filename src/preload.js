@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
    
   }
 
-  randomWaifu();
+  //randomWaifu();
 
   //WaifuListe
 
@@ -465,13 +465,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   contentContainer.addEventListener("click", (e) => {
     if(e.target.classList.contains("loadimages")) {
-      LoadImages(20);
+      let zahl = document.getElementById("bildanzahl").value;
+      if (zahl != 0) {
+        LoadImages(zahl);
+      }   
     }
   })
 
   function LoadImages(bilderanzahl) {
     let waifus = fs.readdirSync("src/waifus/");
     let bilder = [];
+    // Bilder Array
     for (let i = 0; i < waifus.length; i++) {
       let bildordner = fs.readdirSync("src/waifus/" + waifus[i] + "/bilder/");
       for (let x = 0; x < bildordner.length; x++) {
@@ -479,21 +483,29 @@ document.addEventListener("DOMContentLoaded", (event) => {
         bilder.push(bildpfad);
       }
     }
-    let bilderWrapper = document.querySelector(".bilderWrapper");
-    let row = bilderWrapper.querySelectorAll(".row");
-    let pixellimit = 1000;
-    let i = 0;
-    let x = 0;
-    let l = 2;
 
-    function zusatzSeiten() {
+    let imageArea = document.querySelector(".imageArea");
+    imageArea.innerHTML = "";
+    
+    let i = 0;
+    let x = -4;
+    let f = 0;
+
+    let seiten = (bilder.length <= bilderanzahl) ? 1 : Math.ceil(bilder.length / bilderanzahl);
+    
+    let e = seiten - 1; 
+    let d = bilderanzahl * e;
+    console.log(seiten);
+
+    let bilderErsteSeite = (bilder.length > bilderanzahl) ? bilderanzahl : bilder.length;
+
+    for (let a = 0; a < seiten; a++) {
+      console.log("a = " + a);
       
-      
-      while (i !== bilder.length) {
-        if (bilder.length - bilderanzahl * l !== 0) {
-          l++
-        }
-        document.querySelector('.bilderContainer').innerHTML += `
+      let c = (a === e) ? bilder.length - d : bilderanzahl; //Letzte Seite
+      let bilderProSeite = (seiten === 1) ? bilder.length : c; //Bilder pro Seite
+      x = x + 4;
+      document.querySelector('.imageArea').innerHTML += `
       <div class="bilderWrapper">
         <div class="row">
           
@@ -509,44 +521,100 @@ document.addEventListener("DOMContentLoaded", (event) => {
         </div>
       </div>            
       `;
+      
+      let row = document.querySelectorAll(".row");
+      console.log(row);
+      
+      for (let b = 0; b < bilderProSeite; b++) {
+        
+        if (bilderErsteSeite > f) {
+          row[x].innerHTML += `<img src="${bilder[i]}" style="var('--opacity', 0)" onload="setTimeout(this.style.opacity = 1, 1000);">`;
+          f++
+        } else {
+          row[x].innerHTML += `<img src="${bilder[i]}" style="var('--opacity', 0)">`;
+        }
+        
+        console.log(b);
+        i++
+        if (x === 3 + 4 * a) {
+          x = (3 + 4 * a) - 3; 
+        } else {
+          x++
+        }
       }
+      
     }
 
-    while (pixellimit > row[0].clientHeight || pixellimit > row[1].clientHeight || pixellimit > row[2].clientHeight || pixellimit > row[3].clientHeight) {
-      
-      if (pixellimit > row[0].clientHeight && x === 0) {
-        row[0].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
-        i++
-      } else if (pixellimit > row[1].clientHeight && x === 1) {
-        row[1].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
-        i++
-      } else if (pixellimit > row[2].clientHeight && x === 2) {
-        row[2].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
-        i++
-      } else if (pixellimit > row[3].clientHeight && x === 3) {
-        row[3].innerHTML += `<img src="${bilder[i]}" style="opacity: 0;">`;
-        i++
+    //Seiten
+
+    let pages = document.querySelectorAll(".bilderWrapper");
+    let pageNumber = pages.length;
+    let anzahlSeiten = "";
+    console.log("Anzahl Seiten: " + pageNumber);
+
+    document.querySelector(".seitenzahlen").innerHTML = "";
+    if (pageNumber > 5) {
+
+      for (let i = 0; i < 5; i++) {
+        anzahlSeiten = anzahlSeiten + `<button class='standard-button'>${i + 1}</button>`;
       }
 
-      if (x < 3) {
-        x++
-      } else {
-        x = 0;
+      document.querySelector(".seitenzahlen").innerHTML = `
+      <div class="seitenContainer">
+        <button class="standard-button" style='display: none;'>«</button>
+        ${anzahlSeiten}
+        <button class="standard-button">»</button>
+      </div>
+      `;
+    } else {
+      console.log("5 oder weniger Seiten!"); 
+
+      for (let i = 0; i < pageNumber; i++) {
+        anzahlSeiten = anzahlSeiten + `<button class='standard-button'>${i + 1}</button>`;
       }
-      
-      if (i === bilder.length || i === bilderanzahl) {
-        console.log("ENDE", "Bilder gesamt: " + bilder.length, "Eingefügte Bilder: " + i);
-        for (let y = 0; y < bilderWrapper.querySelectorAll('img').length; y++) {
-          bilderWrapper.querySelectorAll('img')[y].onload = (e) => {
-            setTimeout(e.target.style.opacity = 1, 1000);
+
+      document.querySelector(".seitenzahlen").innerHTML = `
+      <div class="seitenContainer">
+        ${anzahlSeiten}
+      </div>
+      `;
+    }
+
+    let Seitenzahl = document.querySelector(".seitenzahlen").querySelectorAll("button");
+
+    for (let i = 0; i < Seitenzahl.length; i++) {
+      Seitenzahl[i].addEventListener("click", (e) => {
+        if (e.target.innerHTML === "«") {
+
+          for (let i = 0; i < 5; i++) {
+            let a = parseInt(Seitenzahl[i + 1].innerHTML) - 1;
+            Seitenzahl[i + 1].innerHTML = a.toString();
           }
-        }
 
-        if (i !== bilder.length) {
-          zusatzSeiten();
+          Seitenwechsel(Seitenzahl[1].innerHTML);
+
+        } else if (e.target.innerHTML === "»") {
+          for (let i = 0; i < 5; i++) {
+
+            let a = parseInt(Seitenzahl[i + 1].innerHTML) + 1;
+            Seitenzahl[i + 1].innerHTML = a.toString();
+          }
+
+          Seitenwechsel(Seitenzahl[5].innerHTML);
+          
+        } else {
+          Seitenwechsel(e.target.innerHTML);
         }
-        break;
-      }
+      })
     }
   }
+
+  // Seitenwechsel Gallerie
+
+  function Seitenwechsel(seite) {
+    console.log(seite);
+    document.querySelector(".imageArea").style.setProperty("--transform", ((seite - 1) * 100) * -1 + "%");
+    document.querySelectorAll(".bilderWrapper")[seite - 1].style.setProperty("--opacity", "1");
+  }
+
 });

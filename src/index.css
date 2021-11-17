@@ -286,6 +286,7 @@ Seitennavigation
   flex-direction: column;
   transition: transform 500ms;
   overflow-y: auto;
+  overflow-x: hidden;
   border-right: 1px solid var(--backgroundColor);
 }
 
