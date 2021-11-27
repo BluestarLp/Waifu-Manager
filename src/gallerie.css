@@ -92,3 +92,13 @@ Seiten
     aspect-ratio: 1 / 1;
     font-size: 1.2rem;
 }
+
+.seitenContainer > button.active {
+    filter: brightness(110%);
+    outline: 1px solid white;
+    outline-offset: -1px;
+}
+
+.seitenContainer > button.active:hover {
+    filter: brightness(120%);
+}

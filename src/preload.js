@@ -556,7 +556,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     if (pageNumber > 5) {
 
       for (let i = 0; i < 5; i++) {
-        anzahlSeiten = anzahlSeiten + `<button class='standard-button'>${i + 1}</button>`;
+        anzahlSeiten = anzahlSeiten + `<button class='standard-button seite'>${i + 1}</button>`;
       }
 
       document.querySelector(".seitenzahlen").innerHTML = `
@@ -570,7 +570,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.log("5 oder weniger Seiten!"); 
 
       for (let i = 0; i < pageNumber; i++) {
-        anzahlSeiten = anzahlSeiten + `<button class='standard-button'>${i + 1}</button>`;
+        anzahlSeiten = anzahlSeiten + `<button class='standard-button seite'>${i + 1}</button>`;
       }
 
       document.querySelector(".seitenzahlen").innerHTML = `
@@ -580,31 +580,108 @@ document.addEventListener("DOMContentLoaded", (event) => {
       `;
     }
 
+    document.querySelectorAll('.seite')[0].classList.add("active");
+
     let Seitenzahl = document.querySelector(".seitenzahlen").querySelectorAll("button");
 
     for (let i = 0; i < Seitenzahl.length; i++) {
       Seitenzahl[i].addEventListener("click", (e) => {
-        if (e.target.innerHTML === "«") {
+        let ausgang = (e.target.classList.contains('active')) ? false : true;
+        if (ausgang) {
+          if (e.target.innerHTML === "«") {
 
-          for (let i = 0; i < 5; i++) {
-            let a = parseInt(Seitenzahl[i + 1].innerHTML) - 1;
-            Seitenzahl[i + 1].innerHTML = a.toString();
+            if (Seitenzahl[5].classList.contains('active')) {
+              Seitenzahl[6].style.display = "block";
+            }
+
+            if (Seitenzahl[1].classList.contains('active')) {
+
+              for (let i = 0; i < 5; i++) {
+                let a = parseInt(Seitenzahl[i + 1].innerHTML) - 1;
+                Seitenzahl[i + 1].innerHTML = a.toString();
+              }
+
+            } else if (Seitenzahl[5].classList.contains('active')) {
+
+              Seitenzahl[5].classList.remove('active');
+              Seitenzahl[4].classList.add('active');
+              Seitenwechsel(Seitenzahl[4].innerHTML);
+              console.log("Von 5 aus!");
+            } else if (Seitenzahl[4].classList.contains('active')) {
+
+              Seitenzahl[4].classList.remove('active');
+              Seitenzahl[3].classList.add('active');
+              Seitenwechsel(Seitenzahl[3].innerHTML);
+
+            } else if (Seitenzahl[3].classList.contains('active')) {
+
+              Seitenzahl[3].classList.remove('active');
+              Seitenzahl[2].classList.add('active');
+              Seitenwechsel(Seitenzahl[2].innerHTML);
+              
+            } else if (Seitenzahl[2].classList.contains('active')) {
+
+              Seitenzahl[2].classList.remove('active');
+              Seitenzahl[1].classList.add('active');
+              Seitenwechsel(Seitenzahl[1].innerHTML);
+
+            }
+
+            if (Seitenzahl[1].innerHTML == "1" && Seitenzahl[1].classList.contains('active')) {
+              Seitenzahl[0].style.display = "none";
+            }
+  
+          } else if (e.target.innerHTML === "»") {
+
+            if (Seitenzahl[1].classList.contains('active')) {
+              Seitenzahl[0].style.display = "block";
+            }
+
+            if (Seitenzahl[5].classList.contains('active')) {
+              for (let i = 0; i < 5; i++) {
+  
+                let a = parseInt(Seitenzahl[i + 1].innerHTML) + 1;
+                Seitenzahl[i + 1].innerHTML = a.toString();
+              }
+  
+              Seitenwechsel(Seitenzahl[5].innerHTML);
+            } else if (Seitenzahl[4].classList.contains('active')) {
+
+              Seitenzahl[4].classList.remove('active');
+              Seitenzahl[5].classList.add('active');
+              Seitenwechsel(Seitenzahl[5].innerHTML);
+
+            } else if (Seitenzahl[3].classList.contains('active')) {
+
+              Seitenzahl[3].classList.remove('active');
+              Seitenzahl[4].classList.add('active');
+              Seitenwechsel(Seitenzahl[4].innerHTML);
+
+            } else if (Seitenzahl[2].classList.contains('active')) {
+
+              Seitenzahl[2].classList.remove('active');
+              Seitenzahl[3].classList.add('active');
+              Seitenwechsel(Seitenzahl[3].innerHTML);
+              
+            } else if (Seitenzahl[1].classList.contains('active')) {
+
+              Seitenzahl[1].classList.remove('active');
+              Seitenzahl[2].classList.add('active');
+              Seitenwechsel(Seitenzahl[2].innerHTML);
+
+            }
+            
+             if (Seitenzahl[5].innerHTML == pageNumber.toString() && Seitenzahl[5].classList.contains('active')) {
+              Seitenzahl[6].style.display = "none";
+            }
+            
+          } else {
+            document.querySelector(".seitenzahlen").querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            Seitenwechsel(e.target.innerHTML);
           }
-
-          Seitenwechsel(Seitenzahl[1].innerHTML);
-
-        } else if (e.target.innerHTML === "»") {
-          for (let i = 0; i < 5; i++) {
-
-            let a = parseInt(Seitenzahl[i + 1].innerHTML) + 1;
-            Seitenzahl[i + 1].innerHTML = a.toString();
-          }
-
-          Seitenwechsel(Seitenzahl[5].innerHTML);
-          
-        } else {
-          Seitenwechsel(e.target.innerHTML);
-        }
+       }
+        
       })
     }
   }
@@ -613,8 +690,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   function Seitenwechsel(seite) {
     console.log(seite);
-    document.querySelector(".imageArea").style.setProperty("--transform", ((seite - 1) * 100) * -1 + "%");
-    document.querySelectorAll(".bilderWrapper")[seite - 1].style.setProperty("--opacity", "1");
+    document.querySelector(".imageArea").style.setProperty("--transform", ((seite - 1) * 100) * -1 + "%");    
+    document.querySelector('.gallerie').scrollTop = 0;
+    setTimeout(() => {
+      document.querySelectorAll(".bilderWrapper")[seite - 1].style.setProperty("--opacity", "1")
+    }, 1); 
   }
 
 });
