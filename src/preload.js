@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
    
   }
 
-  //randomWaifu();
+  randomWaifu();
 
   //WaifuListe
 
@@ -172,23 +172,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       //Variablen
 
-      function favorit() {
-        if (daten.favorit === true) {
-          return "Ja";
-        } else {
-          return "Nein";
-        }
-      }
-
       let Profilbild = (daten.bild === true) ? "waifus/" + a + "/profilbild.png" : "";
       let Vorname = daten.vorname;
       let Nachname = daten.nachname;
-      let Geburtsdatum = formatDate(daten.geburtsdatum);
-      let Alter = daten.alter;
-      let Augenfarbe = daten.augenfarbe;
-      let Haarfarbe = daten.haarfarbe;
-      let Favorit = favorit();
-      let Farbe = daten.farbe;
+      let Geburtsdatum = (daten.geburtsdatum === "") ? "k. A." : formatDate(daten.geburtsdatum);
+      let Alter = (daten.alter === "") ? "k. A." : daten.alter;
+      let Augenfarbe = (daten.augenfarbe === "") ? "k. A." : daten.augenfarbe;
+      let Haarfarbe = (daten.haarfarbe === "") ? "k. A." : daten.haarfarbe;
+      let Favorit = (daten.favorit === true) ? "Ja" : "Nein";
+      let Farbe = (daten.farbe === false) ? "k. A." : daten.farbe;
       let Beschreibung = daten.beschreibung;
       console.log(daten);
       let inhalt = `
@@ -601,6 +593,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 Seitenzahl[i + 1].innerHTML = a.toString();
               }
 
+              Seitenwechsel(Seitenzahl[1].innerHTML);
+
             } else if (Seitenzahl[5].classList.contains('active')) {
 
               Seitenzahl[5].classList.remove('active');
@@ -676,6 +670,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }
             
           } else {
+            if (pageNumber > 5) {
+              
+              if (Seitenzahl[5].innerHTML == pageNumber.toString() && Seitenzahl[5].classList.contains('active')) {
+                Seitenzahl[6].style.display = "block";
+              } else if (Seitenzahl[1].innerHTML == "1" && Seitenzahl[1].classList.contains('active')) {
+                Seitenzahl[0].style.display = "block";
+              }
+            }
+            
+
+            if (e.target.innerHTML == pageNumber.toString() && pageNumber > 5) {
+              
+              Seitenzahl[6].style.display = "none";
+            } else if (e.target.innerHTML == "1" && pageNumber > 5) {
+              Seitenzahl[0].style.display = "none";
+              
+            }
+
             document.querySelector(".seitenzahlen").querySelector('.active').classList.remove('active');
             e.target.classList.add('active');
             Seitenwechsel(e.target.innerHTML);
