@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
    
   }
 
-  randomWaifu();
+  //randomWaifu();
 
   //WaifuListe
 
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let Augenfarbe = (daten.augenfarbe === "") ? "k. A." : daten.augenfarbe;
       let Haarfarbe = (daten.haarfarbe === "") ? "k. A." : daten.haarfarbe;
       let Favorit = (daten.favorit === true) ? "Ja" : "Nein";
-      let Farbe = (daten.farbe === false) ? "k. A." : daten.farbe;
+      let Farbe = (daten.farbe === false) ? "k. A." : `<div style='background-color: ${daten.farbe}; height: 100%; width: 50%;'></div>`;
       let Beschreibung = daten.beschreibung;
       console.log(daten);
       let inhalt = `
@@ -363,19 +363,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
           alter: alter,
           augenfarbe: augenfarbe,
           haarfarbe: haarfarbe,
-          farbe: farbauswahl(),
+          farbe: (checkBoxF.checked === true) ? farbe : false,
           favorit: favorit,
           beschreibung: beschreibung,
-          bild: TestBild()
+          bild: TestBild(),
+          tierlist: false
         };
-
-        function farbauswahl() {
-          if (checkBoxF.checked) {
-            return farbe;
-          } else {
-            return false;
-          }
-        }
 
         console.log(obj);
         let daten = JSON.stringify(obj);
@@ -398,12 +391,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 }
               }) 
               let datenJSON = folder + "/daten.json";
-              fs.writeFile(datenJSON, daten, (err) => {
+              fs.writeFileSync(datenJSON, daten, (err) => {
                 if (err) {
                   console.error(err);
                   return;
                 }
               });
+              fs.writeFileSync(folder + "/tierliste.txt", "offen", (err) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+              })
             }
           });
         
@@ -458,7 +457,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   contentContainer.addEventListener("click", (e) => {
     if(e.target.classList.contains("loadimages")) {
       let zahl = document.getElementById("bildanzahl").value;
-      if (zahl != 0) {
+      if (zahl != 0 && zahl >= 1) {
         LoadImages(zahl);
       }   
     }
@@ -708,5 +707,142 @@ document.addEventListener("DOMContentLoaded", (event) => {
       document.querySelectorAll(".bilderWrapper")[seite - 1].style.setProperty("--opacity", "1")
     }, 1); 
   }
+
+  //Tierliste
+
+    //Bearbeiten
+    document.addEventListener('click', (e) => {
+      if (e.target.id === "tierBearbeiten") {
+      let tierMenuSettings = document.getElementById('tierMenuSettings');
+      tierMenuSettings.style.display = "block";
+      tierMenuSettings.style.left = null;
+      tierMenuSettings.style.top = "calc(var(--menuBarHeigth, 1.2rem) - 1px)";
+      LoadWaifusinTierList();
+      DragTierList();
+      }
+    })
+
+    // Drag und Drop
+
+    function DragTierList() {
+      const listItem = document.getElementById('tierMenuSettings').querySelectorAll('li');
+      const list = document.getElementById('tierMenuSettings').querySelectorAll('ul');
+
+
+      let draggedItem = null;
+
+      for (let i = 0; i < listItem.length; i++) {
+        let item = listItem[i];
+
+        item.addEventListener('dragstart', () => {
+          draggedItem = item;
+          console.log('START');
+          setTimeout(() => {
+            item.style.display = 'none';
+          },0)
+        })
+
+        item.addEventListener('dragend', () => {
+          console.log('ENDE');
+          setTimeout(()=> {
+            draggedItem.style.display = 'block';
+            draggedItem = null;
+          },0)
+        })
+
+        
+
+        for (let x = 0; x < list.length; x++) {
+          let listen = list[i];
+
+
+          listen.addEventListener('dragover', function(e) {
+            e.preventDefault();
+          })
+
+          listen.addEventListener('dragenter', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = "var(--backgroundColorDark)";
+          })
+
+          listen.addEventListener('dragover', function(e) {
+            this.style.backgroundColor = "var(--backgroundColorDark)";
+          })
+
+          listen.addEventListener('dragleave', function(e) {
+            this.style.backgroundColor = "var(--backgroundColor)";
+          })
+
+          listen.addEventListener('drop', function(e) {
+            this.append(draggedItem);
+            this.style.backgroundColor = "var(--backgroundColor)";
+          })
+        }
+      }
+    }
+
+    function LoadWaifusinTierList() {
+      let pfad = "src/waifus/";
+      let waifus = fs.readdirSync(pfad);
+
+      document.querySelector('.newWaifus').innerHTML = `<ul id="Offen"></ul>`;
+
+      document.querySelector('.tierlistWaifus').innerHTML = `
+      <ul id="SS">
+
+      </ul>
+      <ul id="S">
+
+      </ul>
+      <ul id="A">
+
+      </ul>
+      <ul id="B">
+
+      </ul>
+      <ul id="C">
+
+      </ul>
+      <ul id="D">
+
+      </ul>
+      <ul id="E">
+
+      </ul>
+      <ul id="F">
+
+      </ul>`;
+
+      for (let i = 0; i < waifus.length; i++) {
+
+        let Platzierung = fs.readFileSync(pfad + waifus[i] + "/tierliste.txt").toString();
+
+        let daten = fs.readFileSync(pfad + waifus[i] + "/daten.json");
+
+        daten = JSON.parse(daten);
+
+        let WaifuName = `<li draggable="true">${daten.vorname} ${daten.nachname}</li>`;
+
+        if (Platzierung === "Offen") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "SS") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "S") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "A") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "B") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "C") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "D") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "E") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        } else if (Platzierung === "F") {
+          document.getElementById(Platzierung).innerHTML += WaifuName;
+        }
+      }
+    }
 
 });

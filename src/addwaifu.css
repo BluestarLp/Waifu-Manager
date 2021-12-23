@@ -50,6 +50,7 @@
 
 textarea {
     min-height: 4rem;
+    resize: vertical;
 }
 
 .Profilbild {

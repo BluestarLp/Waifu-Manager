@@ -11,7 +11,7 @@
 html,
 body,
 #wrapper {
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 html,
@@ -39,11 +39,13 @@ h2 {
 
 :root {
   --backgroundColor: rgb(52, 73, 94); /*rgb(34, 87, 139);*/
+  --backgroundColorDark: rgb(49, 68, 87);
   --sideBarLength: clamp(180px, 25%, 220px);
   --sideBarLengthSmall: clamp(100px, 20%, 160px);
   --borderDotted: 2px dotted white;
   --activeNav: rgb(74, 93, 110);
   --menuBarHeigth: 30px;
+  --blackBackground: rgba(31, 30, 30, 0.8);
 }
 
 .standard-button {
@@ -311,7 +313,11 @@ Menü + Info Popup
 
 #popup > div {
   position: fixed;
-  inset: 10% 30%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  min-height: 50%;
   background-color: red;
   z-index: 1001;
   display: none;

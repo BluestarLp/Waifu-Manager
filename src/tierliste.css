@@ -1,0 +1,142 @@
+.tierliste h1 {
+    text-align: center;
+}
+
+.tierlistTop {
+    padding-bottom: 1rem;
+    border-bottom: var(--borderDotted);
+    margin-bottom: 1rem;
+}
+
+.tier {
+    border-bottom: 2px solid white;
+    display: flex;
+}
+
+.tier:first-child {
+    border-top: 2px solid white;
+}
+
+.tier > div:first-child {
+    min-width: 10rem;
+    min-height: 10rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    color: white;
+    -webkit-text-stroke: 0.001em black;
+}
+
+.tierMenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#tierBearbeiten {
+    margin-bottom: 1rem;
+}
+
+#tierMenuSettings {
+    display: none;
+    position: absolute;
+    z-index: 110;
+    width: 25rem;
+    min-height: 15rem;
+    background-color: var(--backgroundColor);
+    border: 1px solid white;
+    box-shadow: rgba(10, 10, 10, 0.2) 0px 7px 29px 0px;
+}
+
+#tierMenuSettings > span:first-of-type {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+#tierMenuSettingsheader {
+    width: 100%;
+    height: 1.5rem;
+    cursor: move;
+}
+
+.tierlistWaifus ul {
+    padding: 0;
+}
+
+.tierlistContainer {
+    overflow-x: clip;
+}
+
+.tierCharacter {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+}
+
+.tierCharacterWrapper {
+    width: 10rem;
+    height: 10rem;
+    position: relative;
+}
+
+.WaifuName::after {
+    content: attr(data-waifu-name);
+    transition: opacity 250ms;
+    opacity: 0;
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    padding: 0.2rem 0.3rem;
+    border-radius: 5px;
+    background-color: var(--blackBackground);
+}
+
+.WaifuName:hover::after {
+    content: attr(data-waifu-name);
+    opacity: 1;
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    padding: 0.2rem 0.3rem;
+    border-radius: 5px;
+    background-color: var(--blackBackground);
+}
+
+.tierCharacterWrapper img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#tierMenuSettings ul {
+    padding-top: 2rem;
+    padding-left: 0;
+    min-height: 4rem;
+    columns: 2;
+    position: relative;
+}
+
+#tierMenuSettings ul li {
+    cursor: pointer;
+    list-style-type: none;
+}
+
+#tierMenuSettings ul li:hover {
+    text-decoration: underline;
+}
+ /*aklsjdflsfl*/
+.newWaifus ul::before,
+.tierlistWaifus ul::before {
+    content: attr(id);
+    position: absolute;
+    left: 0;
+    bottom: calc(100% - 1.5rem);
+}
