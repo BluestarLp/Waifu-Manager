@@ -285,8 +285,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return;
       }
       contentContainer.innerHTML = data;
+      ImportWaifusinTierList();
     });
   });
+
   document.getElementById("bilderGallerie").addEventListener("click", () => {
     fs.readFile("src/Seiten/bildergallerie.html", "utf-8", (err, data) => {
       if (err) {
@@ -397,7 +399,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   return;
                 }
               });
-              fs.writeFileSync(folder + "/tierliste.txt", "offen", (err) => {
+              fs.writeFileSync(folder + "/tierliste.txt", "Offen", (err) => {
                 if (err) {
                   console.error(err);
                   return;
@@ -722,6 +724,22 @@ document.addEventListener("DOMContentLoaded", (event) => {
       }
     })
 
+    document.addEventListener('click', (e) => {
+      if (e.target.id === "saveTierList") {
+        let waifus = document.getElementById('tierMenuSettings').querySelectorAll('li');
+        for (let i = 0; i < waifus.length; i++) {
+          let name = waifus[i].innerText.toLowerCase().replace(' ','-');
+          fs.writeFileSync(`src/waifus/${name}/tierliste.txt`, waifus[i].parentNode.id, (err) => {
+            if (err) {
+              console.error(err);
+            }
+          })
+          document.getElementById('tierMenuSettings').style.display = 'none';
+          document.getElementById('tierListe').click();
+        }
+      }
+    })
+
     // Drag und Drop
 
     function DragTierList() {
@@ -777,6 +795,32 @@ document.addEventListener("DOMContentLoaded", (event) => {
             this.append(draggedItem);
             this.style.backgroundColor = "var(--backgroundColor)";
           })
+        }
+      }
+    }
+
+    // Load Waifus in List
+
+    function ImportWaifusinTierList() {
+      let pfad = "src/waifus/";
+      let waifus = fs.readdirSync(pfad);
+
+      for (let i = 0; i < waifus.length; i++) {
+        let daten = fs.readFileSync(pfad + waifus[i] + "/daten.json");
+
+        daten = JSON.parse(daten);
+
+        let tierListPosition = fs.readFileSync(pfad + waifus[i] + "/tierliste.txt").toString();
+
+        let waifu = `
+          <div class="tierCharacterWrapper">
+            <div class="WaifuName" data-waifu-name="${daten.vorname} ${daten.nachname}">
+              <img src="waifus/${waifus[i]}/profilbild.png">
+            </div>
+          </div>`;
+
+        if (tierListPosition !== "Offen") {
+          document.querySelector(`[data-waifu-tier=${tierListPosition}]`).innerHTML += waifu;
         }
       }
     }
