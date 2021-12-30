@@ -3,6 +3,28 @@
   margin-bottom: 1rem;
 }
 
+.viewWaifuHeader {
+  width: clamp(300px, 100%, 1100px);
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewWaifuHeader > h1 {
+  min-height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewWaifuHeader > button {
+  position: absolute;
+  right: 5px;
+  margin: auto 0;
+}
+
 .informationContainer {
   width: clamp(300px, 100%, 1100px);
   margin: 0 auto;

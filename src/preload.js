@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
    
   }
 
-  //randomWaifu();
+  randomWaifu();
 
   //WaifuListe
 
@@ -185,7 +185,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.log(daten);
       let inhalt = `
         <div class="contentWrapper viewWaifu" style="--akzentFarbe: var(--backgroundColor);">
-          <h1>Waifu: ${Vorname} ${Nachname}</h1>
+          <div class='viewWaifuHeader'>
+            <h1>Waifu: ${Vorname} ${Nachname}</h1>
+            <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
+          </div>
           <div class="informationContainer">
               <div class="dataContainer1">
                 <div class="waifuPicture">
@@ -325,13 +328,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         GenWarnung.style.display = "block";
         GenWarnung.innerHTML += "<span>Nicht alle Pflichtfelder wurden ausgefüllt!</span>";
         //contentContainer.scrollTo(0, document.querySelector('.contentWrapper').scrollHeight);
-        let div = document.querySelector('.GenWarnung');
-        scrollToElement(div);
+        scrollToElement(GenWarnung);
         break;
       case 1: //Ordner/Waifu existiert bereits
         GenWarnung.style.display = "block";
         GenWarnung.innerHTML += "<span>Eine Waifu unter diesem Namen existiert bereits!</span>";
-        contentContainer.scrollTo(0, document.querySelector('.contentWrapper').scrollHeight);
+        scrollToElement(GenWarnung);
         break;
       case 2: //Unerwartetes Problem
         GenWarnung.style.display = "block";
@@ -378,45 +380,73 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let folder = "src/waifus/" + obj.vorname.toLowerCase() + "-" + obj.nachname.toLowerCase();
         console.log(folder);
 
-        if (fs.existsSync(folder)) {
-          console.log("Ordner existiert bereits!");
-          ErrorHandling(1);
-        } else {
-          fs.mkdir(folder, { recursive: true }, (err) => {
-            if (err) {
-              console.error(err);
-            } else {
-              console.log("Ordner erstellt!");
-              fs.mkdirSync(folder + "/bilder", (err) => {
-                if (err) {
-                  console.error(err);
-                }
-              }) 
-              let datenJSON = folder + "/daten.json";
-              fs.writeFileSync(datenJSON, daten, (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-              });
-              fs.writeFileSync(folder + "/tierliste.txt", "Offen", (err) => {
-                if (err) {
-                  console.error(err);
-                  return;
-                }
-              })
-            }
-          });
-        
+        if (document.querySelector('.speichern').classList.contains('bearbeiten') != true) {
 
-        //Profilbild
+          if (fs.existsSync(folder)) {
+            console.log("Ordner existiert bereits!");
+            ErrorHandling(1);
+          } else {
+            fs.mkdir(folder, { recursive: true }, (err) => {
+              if (err) {
+                console.error(err);
+              } else {
+                console.log("Ordner erstellt!");
+                fs.mkdirSync(folder + "/bilder", (err) => {
+                  if (err) {
+                    console.error(err);
+                  }
+                }) 
+                let datenJSON = folder + "/daten.json";
+                fs.writeFileSync(datenJSON, daten, (err) => {
+                  if (err) {
+                    console.error(err);
+                    return;
+                  }
+                });
+                fs.writeFileSync(folder + "/tierliste.txt", "Offen", (err) => {
+                  if (err) {
+                    console.error(err);
+                    return;
+                  }
+                })
+              }
+            });
+          
 
-        let profilbild = document.querySelector(".Profilbild").src;
-        let profilbildTest = profilbild.substr(profilbild.length - 10); // = index.html, da src = ""
+          //Profilbild
 
-        if (profilbildTest != "index.html") {
-          console.log(profilbild);
-          var bild = profilbild.replace(/^data:image\/\w+;base64,/, "");
+          let profilbild = document.querySelector(".Profilbild").src;
+          let profilbildTest = profilbild.substr(profilbild.length - 10); // = index.html, da src = ""
+
+          if (profilbildTest != "index.html") {
+            console.log(profilbild);
+            var bild = profilbild.replace(/^data:image\/\w+;base64,/, "");
+
+            let bildpfad = folder + "/profilbild.png";
+
+            fs.writeFileSync(bildpfad, bild, { encoding: "base64" }, (err) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+            });
+            ClickWaifuList();
+          } else {
+            console.log("Kein Bild hinzugefügt!");
+            ClickWaifuList();
+          }
+        }
+      } else {
+        fs.writeFileSync(folder + "/daten.json", daten, (err) => {
+          if (err) {
+            console.error(err);
+          }
+        })
+
+        let Profilbild = document.querySelector('.Profilbild').src;
+
+        if (Profilbild.substr(Profilbild.length - 14) != "profilbild.png" && Profilbild.substr(Profilbild.length - 10 != "index.html")) {
+          var bild = Profilbild.replace(/^data:image\/\w+;base64,/, "");
 
           let bildpfad = folder + "/profilbild.png";
 
@@ -426,12 +456,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
               return;
             }
           });
-          ClickWaifuList();
-        } else {
-          console.log("Kein Bild hinzugefügt!");
-          ClickWaifuList();
         }
-       }
+        ClickWaifuList();
+      }
+
+        
+       // Hier
         function TestBild() {
           let profilbild = document.querySelector(".Profilbild").src;
           let profilbildTest = profilbild.substr(profilbild.length - 10); // = index.html, da src = ""  
@@ -453,6 +483,35 @@ document.addEventListener("DOMContentLoaded", (event) => {
       }
     }
   });
+
+  // Waifu-Daten Bearbeiten 
+
+  document.addEventListener('click', (e) => {
+    if (e.target.id === "waifuDatenBearbeiten") {
+      let WaifuName = document.querySelector('.viewWaifuHeader').querySelector('h1').innerText.replace('Waifu:', '').trim().replace(' ', '-').toLowerCase();
+      let daten = fs.readFileSync(`src/waifus/${WaifuName}/daten.json`).toString();
+      daten = JSON.parse(daten);
+      let Seite = fs.readFileSync(`src/Seiten/addwaifu.html`).toString();
+
+      contentContainer.innerHTML = Seite;
+
+      document.querySelector('.Profilbild').src = (daten.bild === true) ? `waifus/${daten.vorname}-${daten.nachname}/profilbild.png` : "";
+
+      document.getElementById("vorname").value = daten.vorname;
+      document.getElementById("nachname").value = daten.nachname;
+      document.getElementById("geburtsdatum").value = daten.geburtsdatum;
+      document.getElementById("alter").value = daten.alter;
+      document.getElementById("augenfarbe").value = daten.augenfarbe;
+      document.getElementById("haarfarbe").value = daten.haarfarbe;
+      document.getElementById("accentCheckbox").checked = (daten.farbe === false) ? false : true;
+      document.getElementById("lieblingsfarbe").value = (daten.farbe === false) ? "" : daten.farbe;
+      document.getElementById("lieblingsfarbe").style.display = (daten.farbe === false) ? "none" : "block";
+      document.getElementById("favorit").checked = daten.favorit;
+      document.getElementById("beschreibung").value = daten.beschreibung;
+
+      document.querySelector('.speichern').classList.add('bearbeiten');
+    }
+  })
 
   // Gallerie
 
