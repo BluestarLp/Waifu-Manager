@@ -46,6 +46,7 @@ h2 {
   --activeNav: rgb(74, 93, 110);
   --menuBarHeigth: 30px;
   --blackBackground: rgba(31, 30, 30, 0.8);
+  --redBackground: #d41324;
 }
 
 .standard-button {
@@ -102,7 +103,7 @@ header:not(#contentContainer header) {
 }
 
 #quit:hover {
-  background-color: #d41324;
+  background-color: var(--redBackground);
 }
 
 #quit:hover img {
@@ -290,6 +291,7 @@ Seitennavigation
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid var(--backgroundColor);
+  position: relative;
 }
 
 .filler {

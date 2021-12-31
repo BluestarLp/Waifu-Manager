@@ -185,9 +185,26 @@ document.addEventListener("DOMContentLoaded", (event) => {
       console.log(daten);
       let inhalt = `
         <div class="contentWrapper viewWaifu" style="--akzentFarbe: var(--backgroundColor);">
+          <div class='MeldungWaifuWrapper' style='display: none;'>
+            <div class='MeldungWaifu'>
+              <div class="TextMeldung">
+                Sind Sie sich sicher, dass Sie diese Waifu löschen wollen?
+              </div>
+              <div class="ActionButtonContainer">
+                <button class='standard-button' id="waifuLoeschenSicher">Löschen</button>
+                <button class='standard-button' onclick="document.querySelector('.MeldungWaifuWrapper').style.display = 'none'">Abbrechen</button>
+              </div>
+            </div> 
+          </div>
           <div class='viewWaifuHeader'>
             <h1>Waifu: ${Vorname} ${Nachname}</h1>
-            <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
+            <div class="waifuDropdownWrapper">
+              <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
+              <div class="dropdownContainer">
+                <button style='--count: 0;' onclick="document.querySelector('.MeldungWaifuWrapper').style.display = 'flex'" class="standard-button" id="waifuLoeschen"><span>Löschen</span><img src='images/muelleimer.png' alt='' role='none presentation'></button>
+
+              </div>
+            </div>
           </div>
           <div class="informationContainer">
               <div class="dataContainer1">
@@ -242,6 +259,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
       contentContainer.innerHTML = inhalt;
       console.log(a);
   }
+
+  contentContainer.addEventListener("click", (e) => {
+    if (e.target.id === "waifuLoeschenSicher") {
+      let WaifuName = document.querySelector('.viewWaifuHeader').querySelector('h1').innerText.replace('Waifu:', '').trim().replace(' ', '-').toLowerCase();
+
+      document.querySelector('.MeldungWaifu').style.display = "none";
+      fs.rmdirSync(`src/waifus/${WaifuName}/`, {recursive: true});
+      
+      document.getElementById('waifuListe').click();
+    }
+  })
 
   contentContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("waifuCard")) {
@@ -832,17 +860,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
         for (let x = 0; x < list.length; x++) {
           let listen = list[i];
 
-
-          listen.addEventListener('dragover', function(e) {
-            e.preventDefault();
-          })
-
           listen.addEventListener('dragenter', function(e) {
             e.preventDefault();
             this.style.backgroundColor = "var(--backgroundColorDark)";
           })
 
           listen.addEventListener('dragover', function(e) {
+            e.preventDefault();
             this.style.backgroundColor = "var(--backgroundColorDark)";
           })
 
@@ -871,10 +895,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         let tierListPosition = fs.readFileSync(pfad + waifus[i] + "/tierliste.txt").toString();
 
+        let WaifuImg = (daten.bild === true) ? `<img src="waifus/${waifus[i]}/profilbild.png">` : `<img src='images/standard-avatar.png'>`;
+
         let waifu = `
           <div class="tierCharacterWrapper">
             <div class="WaifuName" data-waifu-name="${daten.vorname} ${daten.nachname}">
-              <img src="waifus/${waifus[i]}/profilbild.png">
+              ${WaifuImg}
             </div>
           </div>`;
 

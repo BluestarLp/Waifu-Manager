@@ -44,6 +44,7 @@
   "dependencies": {
     "ansi-regex": "^6.0.1",
     "browserify": "^17.0.0",
+    "del": "^6.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "empty-dir": "^2.0.0",
     "fs": "0.0.1-security",
