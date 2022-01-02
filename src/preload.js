@@ -1,6 +1,7 @@
 const fs = require("fs");
 const emptyDir = require("empty-dir");
 const { ipcRenderer } = require("electron");
+const path = require("path");
 
 document.addEventListener("DOMContentLoaded", (event) => {
   //Variablen SemiGlobal
@@ -8,6 +9,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
   const contentContainer = document.getElementById("contentContainer");
 
   //Funktionen
+
+  console.log(`Diese App kommt aus dem Ordner: ${__dirname}`)
 
   function scrollToElement(element) {
     element.scrollIntoView({block: "start", behavior: "smooth"});
@@ -48,7 +51,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   //Navigaton
 
   document.getElementById("start").addEventListener("click", () => {
-    fs.readFile("src/Seiten/start.html", "utf8", (err, data) => {
+    fs.readFile(`${__dirname}/Seiten/start.html`, "utf8", (err, data) => {
       if (err) {
         console.error(err);
         return;
@@ -59,7 +62,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
   
   document.getElementById("waifuListe").addEventListener("click", () => {
-    fs.readFile("src/Seiten/waifuliste.html", "utf-8", (err, data) => {
+    fs.readFile(`${__dirname}/Seiten/waifuliste.html`, "utf-8", (err, data) => {
       if (err) {
         console.error(err);
         return;
@@ -82,7 +85,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         document.querySelector('.sMiddle').innerHTML = '<h2>Wie es aussieht, haben Sie noch keine Waifus angelegt:</h2><button id="newWaifu" class="newWaifuPage">+</button>';
       } else {
         
-        let pfad = "src/waifus/";
+        let pfad = `${__dirname}/waifus/`;
         let waifus = fs.readdirSync(pfad);
         let i = Math.floor(Math.random() * waifus.length);
         let waifu = pfad + waifus[i] + "/";
@@ -119,7 +122,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       }
     }
 
-    emptyDir('src/waifus', (err, result) => {
+    emptyDir(`${__dirname}/waifus`, (err, result) => {
       if (err) {
         console.error(err);
       } else {
@@ -158,7 +161,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     a = a.replace(" ", "-");
     a = a.toLowerCase();
     a = a.trim(); // Ende
-      let pfad = "src/waifus/" + a + "/";
+      let pfad = `${__dirname}/waifus/` + a + "/";
       let datenDatei = fs.readFileSync(pfad + "daten.json", "utf-8", (err, data) => {
         if (err) {
           console.error(err);
@@ -202,7 +205,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
               <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
               <div class="dropdownContainer">
                 <button style='--count: 0;' onclick="document.querySelector('.MeldungWaifuWrapper').style.display = 'flex'" class="standard-button" id="waifuLoeschen"><span>Löschen</span><img src='images/muelleimer.png' alt='' role='none presentation'></button>
-
               </div>
             </div>
           </div>
@@ -265,7 +267,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let WaifuName = document.querySelector('.viewWaifuHeader').querySelector('h1').innerText.replace('Waifu:', '').trim().replace(' ', '-').toLowerCase();
 
       document.querySelector('.MeldungWaifu').style.display = "none";
-      fs.rmdirSync(`src/waifus/${WaifuName}/`, {recursive: true});
+      fs.rmdirSync(`${__dirname}/waifus/${WaifuName}/`, {recursive: true});
       
       document.getElementById('waifuListe').click();
     }
@@ -280,7 +282,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
 
   function waifuListeimport() {
-    let pfad = "src/waifus/";
+    let pfad = `${__dirname}/waifus/`;
     let waifus = fs.readdirSync(pfad);
     document.querySelector(".favoriteContainer").innerHTML = "";
     document.querySelector(".waifuListContainer").innerHTML = "";
@@ -310,7 +312,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   document.getElementById("tierListe").addEventListener("click", () => {
-    fs.readFile("src/Seiten/tierliste.html", "utf-8", (err, data) => {
+    fs.readFile(`${__dirname}/Seiten/tierliste.html`, "utf-8", (err, data) => {
       if (err) {
         console.error(err);
         return;
@@ -321,7 +323,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
 
   document.getElementById("bilderGallerie").addEventListener("click", () => {
-    fs.readFile("src/Seiten/bildergallerie.html", "utf-8", (err, data) => {
+    fs.readFile(`${__dirname}/Seiten/bildergallerie.html`, "utf-8", (err, data) => {
       if (err) {
         console.error(err);
         return;
@@ -333,7 +335,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   //Aktive Seite
   contentContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("newWaifuPage")) {
-      fs.readFile("src/Seiten/addwaifu.html", "utf-8", (err, data) => {
+      fs.readFile(`${__dirname}/Seiten/addwaifu.html`, "utf-8", (err, data) => {
         if (err) {
           console.error(err);
           return;
@@ -405,7 +407,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         console.log(obj);
         let daten = JSON.stringify(obj);
         console.log(daten);
-        let folder = "src/waifus/" + obj.vorname.toLowerCase() + "-" + obj.nachname.toLowerCase();
+        let folder = `${__dirname}/waifus/${obj.vorname.toLowerCase()}-${obj.nachname.toLowerCase()}`;
         console.log(folder);
 
         if (document.querySelector('.speichern').classList.contains('bearbeiten') != true) {
@@ -517,9 +519,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document.addEventListener('click', (e) => {
     if (e.target.id === "waifuDatenBearbeiten") {
       let WaifuName = document.querySelector('.viewWaifuHeader').querySelector('h1').innerText.replace('Waifu:', '').trim().replace(' ', '-').toLowerCase();
-      let daten = fs.readFileSync(`src/waifus/${WaifuName}/daten.json`).toString();
+      let daten = fs.readFileSync(`${__dirname}/waifus/${WaifuName}/daten.json`).toString();
       daten = JSON.parse(daten);
-      let Seite = fs.readFileSync(`src/Seiten/addwaifu.html`).toString();
+      let Seite = fs.readFileSync(`${__dirname}/Seiten/addwaifu.html`).toString();
 
       contentContainer.innerHTML = Seite;
 
@@ -553,11 +555,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
   })
 
   function LoadImages(bilderanzahl) {
-    let waifus = fs.readdirSync("src/waifus/");
+    let waifus = fs.readdirSync(`${__dirname}/waifus/`);
     let bilder = [];
     // Bilder Array
     for (let i = 0; i < waifus.length; i++) {
-      let bildordner = fs.readdirSync("src/waifus/" + waifus[i] + "/bilder/");
+      let bildordner = fs.readdirSync(`${__dirname}/waifus/${waifus[i]}/bilder/`);
       for (let x = 0; x < bildordner.length; x++) {
         let bildpfad = "waifus/" + waifus[i] + "/bilder/" + bildordner[x];
         bilder.push(bildpfad);
@@ -816,7 +818,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let waifus = document.getElementById('tierMenuSettings').querySelectorAll('li');
         for (let i = 0; i < waifus.length; i++) {
           let name = waifus[i].innerText.toLowerCase().replace(' ','-');
-          fs.writeFileSync(`src/waifus/${name}/tierliste.txt`, waifus[i].parentNode.id, (err) => {
+          fs.writeFileSync(`${__dirname}/waifus/${name}/tierliste.txt`, waifus[i].parentNode.id, (err) => {
             if (err) {
               console.error(err);
             }
@@ -885,7 +887,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // Load Waifus in List
 
     function ImportWaifusinTierList() {
-      let pfad = "src/waifus/";
+      let pfad = `${__dirname}/waifus/`;
       let waifus = fs.readdirSync(pfad);
 
       for (let i = 0; i < waifus.length; i++) {
@@ -911,7 +913,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     function LoadWaifusinTierList() {
-      let pfad = "src/waifus/";
+      let pfad = `${__dirname}/waifus/`;
       let waifus = fs.readdirSync(pfad);
 
       document.querySelector('.newWaifus').innerHTML = `<ul id="Offen"></ul>`;
