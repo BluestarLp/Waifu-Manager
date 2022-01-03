@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   //Navigaton
 
   document.getElementById("start").addEventListener("click", () => {
-    fs.readFile(`${__dirname}/Seiten/start.html`, "utf8", (err, data) => {
+    fs.readFile(`${__dirname}/Seiten/start.html`, "utf-8", (err, data) => {
       if (err) {
         console.error(err);
         return;
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         
         console.log(waifu);
 
-        let daten = fs.readFileSync(waifu + "daten.json", "utf8", (err, data) => {
+        let daten = fs.readFileSync(waifu + "daten.json", "utf-8", (err, data) => {
           return data;
         })
 
