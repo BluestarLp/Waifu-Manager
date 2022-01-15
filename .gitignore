@@ -40,7 +40,10 @@ jspm_packages/
 src/waifus/*
 src/images/gimp/
 src/test/*
+src/Update/Extrahiert/
 *.xcf
+*.zip
+
 # TypeScript v1 declaration files
 typings/
 
@@ -92,3 +95,7 @@ typings/
 
 # Electron-Forge
 out/
+
+# Electron-Builder
+
+dist/

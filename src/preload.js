@@ -1,7 +1,9 @@
 const fs = require("fs");
 const emptyDir = require("empty-dir");
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const path = require("path");
+const request = require("request");
+const extract = require("extract-zip");
 
 document.addEventListener("DOMContentLoaded", (event) => {
   //Variablen SemiGlobal
@@ -14,6 +16,88 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   function scrollToElement(element) {
     element.scrollIntoView({block: "start", behavior: "smooth"});
+  }
+
+  // Externe Links
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "extern") {
+      let url = e.target.getAttribute("href");
+      shell.openExternal(url);
+    }
+  })
+
+  // Neue Version herunterladen
+
+  const GithubUrl = `https://api.github.com/repos/BluestarLp/Waifu-Manager/releases/latest`;
+
+  async function UpdateCheck() {
+    const antwort = await fetch(GithubUrl);
+
+    const daten = await antwort.json();
+
+    console.log(daten);
+
+    const Version = JSON.parse(fs.readFileSync(`${__dirname}/Version.json`));
+
+    if (daten.tag_name !== Version.Version) {
+      AppAktualisieren(daten, Version);
+    }
+  }
+
+  UpdateCheck();
+
+  async function AppAktualisieren(daten, Version) {
+
+      const asset = await daten.assets[0].browser_download_url;
+
+      console.log(asset);
+
+      fs.mkdirSync(`${__dirname}/Update/Extrahiert/`, { recursive: true });
+
+      const zipDatei = `${__dirname}/Update/${daten.assets[0].name}`;
+
+      const req = request({
+        method: "GET",
+        uri: asset
+      });
+
+      let received_bytes = 0;
+      let total_bytes = 0;
+
+      const fileStream = fs.createWriteStream(zipDatei);
+
+      req.pipe(fileStream);
+
+      fileStream.on("error", (err) => {
+        console.error(err);
+      });
+
+      req.on("error", (err) => {
+        console.error(err);
+      });
+
+      req.on('response', data => {
+          total_bytes = parseInt(data.headers['content-length']);
+      });
+
+      req.on('data', chunk => {
+          received_bytes += chunk.length;
+          console.log(`${received_bytes}/${total_bytes}`);
+      });
+
+      req.on("end", async () => {
+        fileStream.close();
+        console.log("Download abgeschlossen");
+
+        try {
+          await extract(zipDatei, { dir: `${__dirname}/Update/Extrahiert/` });
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    
+
   }
 
   //Menüband
