@@ -18,6 +18,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
     element.scrollIntoView({block: "start", behavior: "smooth"});
   }
 
+    // Alle Datein in einem Ordner
+
+  const getAllFiles = function(dirPath, arrayOfFiles) {
+    files = fs.readdirSync(dirPath)
+  
+    arrayOfFiles = arrayOfFiles || []
+  
+    files.forEach(function(file) {
+      if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+        arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
+      } else {
+        arrayOfFiles.push(path.join(__dirname, dirPath, "/", file))
+      }
+    })
+  
+    return arrayOfFiles
+  }
+
   // Externe Links
 
   document.addEventListener("click", (e) => {
@@ -45,7 +63,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
   }
 
-  UpdateCheck();
+  //UpdateCheck();
 
   async function AppAktualisieren(daten, Version) {
 
@@ -94,6 +112,25 @@ document.addEventListener("DOMContentLoaded", (event) => {
           await extract(zipDatei, { dir: `${__dirname}/Update/Extrahiert/` });
         } catch (err) {
           console.error(err);
+        }
+
+        let dateien = getAllFiles(`${__dirname}/Update/Extrahiert/`)
+
+        for (let i = 0; i < dateien.length; i++) {
+          let letztes = dateien[i].lastIndexOf(`${__dirname}`);
+      
+          let string = dateien[i].slice(letztes);
+      
+          dateien[i] = string;
+
+          let stats = fs.statSync(dateien[i]);
+
+          if (stats.isFile()) {
+
+            let inhalt = fs.readFileSync(dateien[i]);
+
+            fs.writeFileSync(dateien[i], inhalt, { recursive: true });
+          }
         }
       });
     
