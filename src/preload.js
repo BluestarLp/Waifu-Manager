@@ -129,9 +129,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             let inhalt = fs.readFileSync(dateien[i]);
 
-            fs.writeFileSync(dateien[i], inhalt, { recursive: true });
+            let parentDirectory = path.resolve(__dirname, "..");
+
+            let pfad = dateien[i].replace(path.join(__dirname, "Update", "Extrahiert"), parentDirectory);
+
+            fs.writeFileSync(pfad, inhalt, { recursive: true });
           }
+
+          
         }
+
+        fs.rmdirSync(`${__dirname}/Update/Extrahiert/`, { recursive: true });
+
+        fs.unlinkSync(zipDatei);
+
+        console.log(dateien.length);
       });
     
 
