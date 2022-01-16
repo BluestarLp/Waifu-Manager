@@ -143,6 +143,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         fs.unlinkSync(zipDatei);
 
+        let Versionsdetails = {
+          Version: daten.tag_name,
+          UpdateName: daten.name,
+          Notizen: daten.body
+        }
+
+        Versionsdetails = JSON.stringify(Versionsdetails);
+
+        fs.writeFileSync(`${__dirname}/Version.json`, Versionsdetails);
+
         console.log(dateien.length);
       });
     
