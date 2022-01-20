@@ -307,13 +307,13 @@ Menü + Info Popup
 
 #popup {
   position: fixed;
-  inset: 0;
+  inset: var(--menuBarHeigth) 0 0 0;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1000;
   display: none;
 }
 
-#popup > div {
+#popup > div:not(#meldung) {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -332,6 +332,31 @@ Menü + Info Popup
   color: white;
   cursor: pointer;
   font-size: 1.2rem;
+}
+
+#meldung {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -25%;
+  margin-top: -4rem;
+  min-height: 4rem;
+  width: 50%;
+  min-width: 300px;
+  background-color: var(--backgroundColor);
+  border: 1px solid white;
+  padding: 1rem 1.5rem;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#meldung > .meldungButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
 @media screen and (max-width: 800px) {

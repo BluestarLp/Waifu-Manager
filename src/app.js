@@ -102,3 +102,13 @@ function dragElement(elmnt) {
 dragElement(document.getElementById('settingsMenu'));
 dragElement(document.getElementById('infoMenu'));
 
+function PopupEntf() {
+  document.getElementById("popup").style.display = "none";
+  
+  let innereElemente = document.getElementById("popup").children;
+  
+  for (let i = 0; i < innereElemente.length; i++) {
+    innereElemente[i].style.display = "none";
+  }
+}
+

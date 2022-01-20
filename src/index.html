@@ -55,6 +55,16 @@
         <div id="infoMenu">
           <span id="close">X</span>
         </div>
+
+        <div id="meldung">
+          <div style="text-align: center;">
+            Es gibt eine neue Version des Waifu-Managers, wollen Sie das Programm aktualisieren?
+          </div>
+          <div class="meldungButtonContainer">
+            <button class="standard-button" id="aktualisieren">Aktualisieren</button>
+            <button class="standard-button" onclick="PopupEntf();">Abbrechen</button>
+          </div>
+        </div>
       </div>
       <div id="contentContainer">
         <div class="contentWrapper start">
@@ -67,7 +77,7 @@
           </div>
           <div class="sFooter">
             <div>
-              <span>© <a target="_blank" href="https://steamcommunity.com/profiles/76561198286277324/">BluestarLp</a></span>   
+              <span>© <a id="extern" href="https://steamcommunity.com/profiles/76561198286277324/">BluestarLp</a></span>   
             </div>
             <div>
               <span>🌐 <a id="extern" href="http://waifu-manager.m2003.bplaced.net/">Unsere Website</a></span>

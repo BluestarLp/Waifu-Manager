@@ -59,11 +59,17 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const Version = JSON.parse(fs.readFileSync(`${__dirname}/Version.json`));
 
     if (daten.tag_name !== Version.Version) {
-      AppAktualisieren(daten, Version);
+      document.getElementById("popup").style.display = "block";
+      document.getElementById("meldung").style.display = "flex";
+
+      document.getElementById("aktualisieren").addEventListener("click", () => {
+        AppAktualisieren(daten, Version);
+      });
     }
   }
 
-  //UpdateCheck();
+  UpdateCheck();
+  
 
   async function AppAktualisieren(daten, Version) {
 
