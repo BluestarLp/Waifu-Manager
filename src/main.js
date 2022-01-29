@@ -105,3 +105,8 @@ ipcMain.on('unmaximize', () => {
 ipcMain.on('minimize', () => {
   mainWindow.minimize();
 })
+
+ipcMain.on('Neustart', () => {
+  app.relaunch();
+  app.quit();
+})

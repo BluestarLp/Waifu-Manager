@@ -1,6 +1,6 @@
 const fs = require("fs");
 const emptyDir = require("empty-dir");
-const { ipcRenderer, shell } = require("electron");
+const { ipcRenderer, shell, dialog } = require("electron");
 const path = require("path");
 const request = require("request");
 const extract = require("extract-zip");
@@ -16,6 +16,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   function scrollToElement(element) {
     element.scrollIntoView({block: "start", behavior: "smooth"});
+  }
+
+  function PopupEntf() {
+    document.getElementById("popup").style.display = "none";
+    
+    let innereElemente = document.getElementById("popup").children;
+    
+    for (let i = 0; i < innereElemente.length; i++) {
+      innereElemente[i].style.display = "none";
+    }
   }
 
     // Alle Datein in einem Ordner
@@ -47,6 +57,26 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   // Neue Version herunterladen
 
+  const VersionDatei = JSON.parse(fs.readFileSync(`${__dirname}/Version.json`));
+
+  if (VersionDatei.Anzeigen === true) {
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("Versionsdetails").style.display = "flex";
+
+    console.log(VersionDatei);
+
+    document.querySelector(".UpdateName").innerText = VersionDatei.UpdateName;
+    document.querySelector(".Versionsbeschreibung").innerText = VersionDatei.Notizen;
+    document.querySelector(".Version").innerText = `Version: ${VersionDatei.Version}`;
+
+    document.addEventListener("click", (e) => {
+      if (e.target.id === "VersionSchließen") {
+
+        PopupEntf();
+      }
+    })
+  }
+
   const GithubUrl = `https://api.github.com/repos/BluestarLp/Waifu-Manager/releases/latest`;
 
   async function UpdateCheck() {
@@ -61,6 +91,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
     if (daten.tag_name !== Version.Version) {
       document.getElementById("popup").style.display = "block";
       document.getElementById("meldung").style.display = "flex";
+      document.getElementById("meldung").innerHTML = `
+      <div style="text-align: center;">
+        Es gibt eine neue Version des Waifu-Managers, wollen Sie das Programm aktualisieren?
+      </div>
+      <div class="meldungButtonContainer">
+        <button class="standard-button" id="aktualisieren">Aktualisieren</button>
+        <button class="standard-button" onclick="PopupEntf();">Abbrechen</button>
+      </div>
+      `;
 
       document.getElementById("aktualisieren").addEventListener("click", () => {
         AppAktualisieren(daten, Version);
@@ -75,6 +114,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       const asset = await daten.assets[0].browser_download_url;
 
+      document.getElementById("meldung").innerHTML = `
+        <label for="downloadBar" style="text-align: center;">Downloadstatus:</label>
+        <progress id="downloadBar" value="0" max="100"></progress>
+        <div id="downloadStatus" style="text-align: center;">0%</div>
+      `;
+
       console.log(asset);
 
       fs.mkdirSync(`${__dirname}/Update/Extrahiert/`, { recursive: true });
@@ -88,6 +133,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       let received_bytes = 0;
       let total_bytes = 0;
+      let prozent = null;
+      let received_mb;
+      let total_mb;
 
       const fileStream = fs.createWriteStream(zipDatei);
 
@@ -103,15 +151,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       req.on('response', data => {
           total_bytes = parseInt(data.headers['content-length']);
+          total_mb = total_bytes / 1000000;
       });
 
       req.on('data', chunk => {
           received_bytes += chunk.length;
-          console.log(`${received_bytes}/${total_bytes}`);
+          prozent = received_bytes * 100 / total_bytes;
+          received_mb = received_bytes / 1000000;
+          document.getElementById("downloadBar").value = prozent.toFixed(2);
+          document.getElementById("downloadStatus").innerText = `${prozent.toFixed(2)}% | ${received_mb.toFixed(2)} MB / ${total_mb.toFixed(2)} MB`;
       });
 
       req.on("end", async () => {
         fileStream.close();
+        document.getElementById("downloadStatus").innerText = "Dateien werden verarbeitet...";
         console.log("Download abgeschlossen");
 
         try {
@@ -120,7 +173,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           console.error(err);
         }
 
-        let dateien = getAllFiles(`${__dirname}/Update/Extrahiert/`)
+        let dateien = await getAllFiles(`${__dirname}/Update/Extrahiert/`)
 
         for (let i = 0; i < dateien.length; i++) {
           let letztes = dateien[i].lastIndexOf(`${__dirname}`);
@@ -152,14 +205,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let Versionsdetails = {
           Version: daten.tag_name,
           UpdateName: daten.name,
-          Notizen: daten.body
+          Notizen: daten.body,
+          Anzeigen: true
         }
 
         Versionsdetails = JSON.stringify(Versionsdetails);
 
         fs.writeFileSync(`${__dirname}/Version.json`, Versionsdetails);
 
-        console.log(dateien.length);
+        document.getElementById("downloadStatus").innerText = "Anwendung wird Neugestartet";
+
+        PopupEntf();
+        
+        setTimeout(() => {
+          ipcRenderer.send("Neustart");
+        }, 1000);
+
+        console.log("Aktualisierung abgeschlossen!");
       });
     
 
@@ -353,6 +415,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             <div class="waifuDropdownWrapper">
               <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
               <div class="dropdownContainer">
+                <button style='--count: 1;' class="standard-button">Bilder hinzufügen</button>
                 <button style='--count: 0;' onclick="document.querySelector('.MeldungWaifuWrapper').style.display = 'flex'" class="standard-button" id="waifuLoeschen"><span>Löschen</span><img src='images/muelleimer.png' alt='' role='none presentation'></button>
               </div>
             </div>
@@ -1009,7 +1072,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         
 
         for (let x = 0; x < list.length; x++) {
-          let listen = list[i];
+          let listen = list[x];
 
           listen.addEventListener('dragenter', function(e) {
             e.preventDefault();
@@ -1021,11 +1084,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
             this.style.backgroundColor = "var(--backgroundColorDark)";
           })
 
-          listen.addEventListener('dragleave', function(e) {
+          listen.addEventListener('dragleave', function() {
             this.style.backgroundColor = "var(--backgroundColor)";
           })
 
-          listen.addEventListener('drop', function(e) {
+          listen.addEventListener('drop', function() {
             this.append(draggedItem);
             this.style.backgroundColor = "var(--backgroundColor)";
           })

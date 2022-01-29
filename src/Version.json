@@ -1,5 +1,6 @@
 {
-    "Version": "0.0.0",
+    "Version": "0.0.1",
     "UpdateName": "Update-Test",
-    "Notizen": "Erste Alpha" 
+    "Notizen": "Erste Alpha",
+    "Anzeigen": true 
 }
