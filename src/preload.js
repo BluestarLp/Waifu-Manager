@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   // Neue Version herunterladen
 
-  const VersionDatei = JSON.parse(fs.readFileSync(`${__dirname}/Version.json`));
+  let VersionDatei = JSON.parse(fs.readFileSync(`${__dirname}/Version.json`));
 
   if (VersionDatei.Anzeigen === true) {
     document.getElementById("popup").style.display = "block";
@@ -73,6 +73,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
       if (e.target.id === "VersionSchließen") {
 
         PopupEntf();
+
+        VersionDatei.Anzeigen = false;
+
+        fs.writeFileSync(`${__dirname}/Version.json`, JSON.stringify(VersionDatei));
       }
     })
   }
@@ -411,7 +415,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             </div> 
           </div>
           <div class='viewWaifuHeader'>
-            <h1>Waifu: ${Vorname} ${Nachname}</h1>
+            <h1 style='padding: 0 8rem;' class='textoverflow'>Waifu: <span class='textoverflow' style="margin-left: 0.5rem;">${Vorname} ${Nachname}</span></h1>
             <div class="waifuDropdownWrapper">
               <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
               <div class="dropdownContainer">
@@ -427,11 +431,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
                   <img src="${Profilbild}">
                 </div>
                 <div class="contentLine">
-                  <span>Vorname:</span><span>${Vorname}</span>
+                  <span>Vorname:</span><span class='textoverflow'>${Vorname}</span>
                 </div>
                 <hr>
                 <div class="contentLine">
-                  <span>Nachname:</span><span>${Nachname}</span>
+                  <span>Nachname:</span><span class='textoverflow'>${Nachname}</span>
                 </div>
             </div>
             <div class="dataContainer2">
@@ -1096,7 +1100,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       }
     }
 
-    // Load Waifus in List
+    // Waifus in Liste laden
 
     function ImportWaifusinTierList() {
       let pfad = `${__dirname}/waifus/`;
@@ -1164,7 +1168,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         daten = JSON.parse(daten);
 
-        let WaifuName = `<li draggable="true">${daten.vorname} ${daten.nachname}</li>`;
+        let WaifuName = `<li draggable="true" class="textoverflow">${daten.vorname} ${daten.nachname}</li>`;
 
         if (Platzierung === "Offen") {
           document.getElementById(Platzierung).innerHTML += WaifuName;
