@@ -73,9 +73,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
       if (e.target.id === "VersionSchließen") {
 
         PopupEntf();
-
+        
         VersionDatei.Anzeigen = false;
 
+        fs.unlinkSync(`${__dirname}/Version.json`);
         fs.writeFileSync(`${__dirname}/Version.json`, JSON.stringify(VersionDatei));
       }
     })
