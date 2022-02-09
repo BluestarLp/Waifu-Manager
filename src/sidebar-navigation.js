@@ -11,10 +11,6 @@ const infoMenu = document.getElementById('infoMenu');
 const popup = document.getElementById('popup');
 
 //Startseite
-settings.addEventListener('click', () => {
-    settingsMenu.style.display = "block";
-    popup.style.display = "block";
-})
 
 info.addEventListener('click', () => {
     infoMenu.style.display = "block";
@@ -41,7 +37,7 @@ document.querySelectorAll('.link').forEach((item) => {
 document.querySelectorAll('.link').forEach((item) => {
     item.addEventListener('mousemove',(e) => {
         let x = e.pageX - item.offsetLeft - window.scrollX;
-        let y = e.pageY - item.offsetTop - window.scrollY;
+        let y = e.pageY - item.offsetTop - window.scrollY - 30;
         item.style.setProperty('--x', x + 'px');
         item.style.setProperty('--y', y + 'px');
     })

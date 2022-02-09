@@ -10,6 +10,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const contentContainer = document.getElementById("contentContainer");
 
+  if (fs.existsSync(`${__dirname}/benutzer-einstellungen.json`)) {
+    const einstellungen = JSON.parse(fs.readFileSync(`${__dirname}/benutzer-einstellungen.json`));
+  } else {
+    const einstellungen = JSON.parse(fs.readFileSync(`${__dirname}/standard-einstellungen.json`));
+  }
+
   //Funktionen
 
   console.log(`Diese App kommt aus dem Ordner: ${__dirname}`)
@@ -53,6 +59,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let url = e.target.getAttribute("href");
       shell.openExternal(url);
     }
+  })
+
+  // Menü öffnen
+
+  document.getElementById('settings').addEventListener('click', () => {
+    document.getElementById('settingsMenu').style.display = "block";
+    document.getElementById('popup').style.display = "block";
+
+    
   })
 
   // Neue Version herunterladen
@@ -616,7 +631,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           haarfarbe: haarfarbe,
           farbe: (checkBoxF.checked === true) ? farbe : false,
           favorit: favorit,
-          beschreibung: beschreibung,
+          beschreibung: beschreibung.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
           bild: TestBild(),
           tierlist: false
         };

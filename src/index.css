@@ -37,6 +37,14 @@ h2 {
   color: white;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 :root {
   --backgroundColor: rgb(52, 73, 94); /*rgb(34, 87, 139);*/
   --backgroundColorDark: rgb(49, 68, 87);
@@ -68,6 +76,27 @@ h2 {
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.dragheader {
+  width: 100%;
+  height: 1.5rem;
+  cursor: move;
+}
+
+.popupContentWrapper {
+  margin-top: 0.5rem;
+  padding: 0 1rem;
+}
+
+.popupContentWrapper > * {
+  margin-bottom: 0.5rem;
+}
+
+.flexcenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Menüband */
@@ -324,7 +353,7 @@ Menü + Info Popup
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
+  width: 70%;
   min-height: 50%;
   background-color: var(--backgroundColor);
   z-index: 1001;
@@ -396,6 +425,34 @@ Menü + Info Popup
   position: relative;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.einstellungen {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.einstellung {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.einstellung > div {
+  width: 50%;
+}
+
+.einstellung > div:nth-of-type(1) {
+  text-align: right;
+}
+
+.einstellung > div:nth-of-type(2) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media screen and (max-width: 800px) {
