@@ -435,12 +435,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
             <div class="waifuDropdownWrapper">
               <button class="standard-button" id="waifuDatenBearbeiten">Bearbeiten</button>
               <div class="dropdownContainer">
-                <button style='--count: 1;' class="standard-button">Bilder hinzufügen</button>
+                <button style='--count: 1;' class="standard-button" id="bilderHinzu">Bilder hinzufügen</button>
                 <button style='--count: 0;' onclick="document.querySelector('.MeldungWaifuWrapper').style.display = 'flex'" class="standard-button" id="waifuLoeschen"><span>Löschen</span><img src='images/muelleimer.png' alt='' role='none presentation'></button>
               </div>
             </div>
           </div>
-          <div class="informationContainer">
+          <div class="informationContainer" data-waifu-name="${Vorname.toLowerCase()}-${Nachname.toLowerCase()}">
               <div class="dataContainer1">
                 <div class="waifuPicture">
                   <img src="images/standard-avatar.png">
@@ -502,6 +502,32 @@ document.addEventListener("DOMContentLoaded", (event) => {
       fs.rmdirSync(`${__dirname}/waifus/${WaifuName}/`, {recursive: true});
       
       document.getElementById('waifuListe').click();
+    }
+  })
+
+  contentContainer.addEventListener("click", (e) => {
+    if (e.target.id === "bilderHinzu") {
+      let waifuName = document.querySelector(".informationContainer").getAttribute("data-waifu-name");
+      ipcRenderer.send("DateiFenster", waifuName);
+    }
+  })
+
+  ipcRenderer.on("bilderSpeichern", (e, arg) => {
+    arg = JSON.parse(arg);
+    console.log(arg);
+
+    let alteBilder = fs.readdirSync(`${__dirname}/waifus/${arg.waifu}/bilder/`);
+
+    for (let i = 0; i < alteBilder.length; i++) {
+      alteBilder[i] = path.basename(alteBilder[i]);
+    }
+
+    for (let i = 0; i < arg.filePaths.length; i++) {
+      if (alteBilder.includes(path.basename(arg.filePaths[i]))) {
+        console.log("Doppeldes Bild:", arg.filePaths[i]);
+      } else {
+        fs.copyFileSync(arg.filePaths[i], `${__dirname}/waifus/${arg.waifu}/bilder/${path.basename(arg.filePaths[i])}`);
+      }
     }
   })
 

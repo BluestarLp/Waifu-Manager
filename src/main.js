@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const URL = require('url').URL;
 
@@ -110,4 +110,20 @@ ipcMain.on('minimize', () => {
 ipcMain.on('Neustart', () => {
   app.relaunch();
   app.quit();
+})
+
+ipcMain.on('DateiFenster', async (e, arg) => {
+  let auswahl = await dialog.showOpenDialog({ 
+    title: "Bilderauswahl", 
+    properties: ['openFile', 'multiSelections', 'dontAddToRecent'], 
+    filters: [
+      { name: 'Bilder', extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp'] }
+    ]
+  });
+
+  auswahl.waifu = arg;
+
+  if (!auswahl.canceled) {
+    e.reply('bilderSpeichern', JSON.stringify(auswahl));
+  }
 })
