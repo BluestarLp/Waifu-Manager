@@ -348,7 +348,7 @@ Menü + Info Popup
   display: none;
 }
 
-#popup > div:not(#meldung) {
+#popup > div:not(#meldung, #AllgMeldung) {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -453,6 +453,35 @@ Menü + Info Popup
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/*---------------------------
+    Allgemein Meldungsbox
+---------------------------*/
+
+#AllgMeldung {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  position: fixed;
+  width: clamp(300px, 60%, 600px);
+  min-height: 20rem;
+  padding: 1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--backgroundColor);
+  border: 1px solid white;
+}
+
+.buttonBox {
+  margin-top: auto;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 
 @media screen and (max-width: 800px) {

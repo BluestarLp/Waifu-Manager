@@ -1,6 +1,6 @@
 const fs = require("fs");
 const emptyDir = require("empty-dir");
-const { ipcRenderer, shell, dialog } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const path = require("path");
 const request = require("request");
 const extract = require("extract-zip");
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   contentContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("profil")) {
-      showWaifu(e);
+      showWaifu(e.target.firstChild.innerHTML);
     }
   })
 
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   }
 
   function showWaifu(e) {
-    let a = e.target.firstChild.innerHTML;
+    let a = e;
     a = a.replace("<span>",""); // Anfang span klick
     a = a.replace("</span>","");
     a = a.replace(" ", "-");
@@ -522,20 +522,78 @@ document.addEventListener("DOMContentLoaded", (event) => {
       alteBilder[i] = path.basename(alteBilder[i]);
     }
 
+    let doppeldeBilder = [];
+
     for (let i = 0; i < arg.filePaths.length; i++) {
       if (alteBilder.includes(path.basename(arg.filePaths[i]))) {
-        console.log("Doppeldes Bild:", arg.filePaths[i]);
+        doppeldeBilder.push(arg.filePaths[i]);
       } else {
         fs.copyFileSync(arg.filePaths[i], `${__dirname}/waifus/${arg.waifu}/bilder/${path.basename(arg.filePaths[i])}`);
       }
+    }
+
+    if (doppeldeBilder.length !== 0) {
+      let inhaltBox = document.querySelector(".inhaltBox");
+      let buttonBox = document.querySelector(".buttonBox");
+
+      let bilderInhalt = "";
+
+      for (let i = 0; i < doppeldeBilder.length; i++) {
+        bilderInhalt += `<li style="margin: 0.5rem 0; cursor: pointer; padding-right: 1rem;" data-bilder-link="${doppeldeBilder[i]}">${doppeldeBilder[i]}<input style="margin-left: 0.5rem;" type="checkbox"></li>`;
+      }
+
+      let doppeldListe = `<h1 style="text-align: center; font-size: 1.2rem;">Welche Bilder sollen überschrieben werden?</h1><ul class="doppeldeBilder">${bilderInhalt}</ul>`;
+
+      document.querySelector(".inhaltBox").addEventListener("click", (e) => {
+        if (e.target.tagName === 'LI') {
+          
+        }
+      })
+
+      document.getElementById("popup").style.display = "block";
+      document.getElementById("AllgMeldung").style.display = "flex";
+
+      inhaltBox.innerHTML = "";
+      buttonBox.innerHTML = "";
+
+      inhaltBox.innerHTML = doppeldListe;
+      buttonBox.innerHTML = `<button class="standard-button" id="bilderueberschreiben">Speichern</button><button class="standard-button" id="bildAbbruch">Abbrechen</button>`;
+    }
+  })
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "bildAbbruch") {
+      PopupEntf();
+    }
+  })
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "bilderueberschreiben") {
+      let bilderCheckbox = document.querySelector(".doppeldeBilder").querySelectorAll("input");
+
+      let bilderLinks = [];
+
+      for (let i = 0; i < bilderCheckbox.length; i++) {
+        if (bilderCheckbox[i].checked) {
+          bilderLinks.push(bilderCheckbox[i].parentNode.getAttribute("data-bilder-link"));
+        }
+      }
+
+      let waifu = document.querySelector(".informationContainer").getAttribute("data-waifu-name");
+
+      for (let i = 0; i < bilderLinks.length; i++) {
+        fs.copyFileSync(bilderLinks[i], `${__dirname}/waifus/${waifu}/bilder/${path.basename(bilderLinks[i])}`);
+      }
+
+      PopupEntf();
     }
   })
 
   contentContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("waifuCard")) {
-      showWaifu(e);
+      showWaifu(e.target.firstChild.innerHTML);
     } else if (e.target.classList.contains("profil2")) {
-      showWaifu(e);
+      showWaifu(e.target.firstChild.innerHTML);
     }
   });
 
@@ -795,7 +853,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       document.getElementById("lieblingsfarbe").value = (daten.farbe === false) ? "" : daten.farbe;
       document.getElementById("lieblingsfarbe").style.display = (daten.farbe === false) ? "none" : "block";
       document.getElementById("favorit").checked = daten.favorit;
-      document.getElementById("beschreibung").value = daten.beschreibung;
+      document.getElementById("beschreibung").value = daten.beschreibung.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
 
       document.querySelector('.speichern').classList.add('bearbeiten');
     }
