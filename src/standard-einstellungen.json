@@ -1,4 +1,5 @@
 {
     "autoUpdates": true,
-    "loliAlarm": false 
+    "loliAlarm": false,
+    "gallerieSeiten": 20 
 }

@@ -57,7 +57,7 @@
             <div class="einstellungen">
               <div class="einstellung">
                 <div>
-                  Automatische Updates:
+                  Automatischer Update-Check:
                 </div>
                 <div>
                   <input type="checkbox" id="autoUpdates">
@@ -71,7 +71,20 @@
                   <input type="checkbox" id="loliAlarm">
                 </div>
               </div>
+              <div class="einstellung">
+                <div>
+                  Gallerieseiten:
+                </div>
+                <div>
+                  <input type="number" class="inputReset" min="1" oninput="validity.valid||(value='');" id="gallerieseiten">
+                </div>
+              </div>
+              
             </div>
+          </div>
+          <div class="flexcenter" style="gap: 5px; margin-top: auto; margin-bottom: 1rem;">
+            <button class="standard-button" id="MenuSpeichern">Speichern</button>
+            <button class="standard-button" id="einstLoeschen">Zurücksetzen</button>
           </div>
         </div>
         <div id="infoMenu">

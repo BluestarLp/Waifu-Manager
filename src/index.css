@@ -45,6 +45,13 @@ a:hover {
   text-decoration: underline;
 }
 
+input {
+  outline: none;
+  border: none;
+  color: black;
+  font-size: 1rem;
+}
+
 :root {
   --backgroundColor: rgb(52, 73, 94); /*rgb(34, 87, 139);*/
   --backgroundColorDark: rgb(49, 68, 87);
@@ -97,6 +104,12 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.inputReset::-webkit-outer-spin-button,
+.inputReset::-webkit-inner-spin-button  {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Menüband */
@@ -455,12 +468,25 @@ Menü + Info Popup
   align-items: center;
 }
 
+#gallerieseiten {
+  width: clamp(3rem, 50%, 4rem);
+  text-align: center;
+  -webkit-appearance: none;
+}
+
+#settingsMenu {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 /*---------------------------
     Allgemein Meldungsbox
 ---------------------------*/
 
 #AllgMeldung {
-  display: flex;
+  display: none;
   justify-content: flex-start;
   flex-direction: column;
   position: fixed;

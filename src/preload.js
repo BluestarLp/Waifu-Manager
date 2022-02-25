@@ -64,10 +64,50 @@ document.addEventListener("DOMContentLoaded", (event) => {
   // Menü öffnen
 
   document.getElementById('settings').addEventListener('click', () => {
-    document.getElementById('settingsMenu').style.display = "block";
+    document.getElementById('settingsMenu').style.display = "flex";
     document.getElementById('popup').style.display = "block";
 
-    
+    let objekt;
+
+    if (fs.existsSync(`${__dirname}/einstellungen.json`)) {
+      objekt = fs.readFileSync(`${__dirname}/einstellungen.json`);
+    } else {
+      objekt = fs.readFileSync(`${__dirname}/standard-einstellungen.json`);
+    }
+
+    objekt = JSON.parse(objekt);
+
+    document.getElementById("autoUpdates").checked = objekt.autoUpdates;
+    document.getElementById("loliAlarm").checked = objekt.loliAlarm;
+    document.getElementById("gallerieseiten").value = objekt.gallerieSeiten;
+  })
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "MenuSpeichern") {
+      let objekt = {
+        autoUpdates: document.getElementById("autoUpdates").checked,
+        loliAlarm: document.getElementById("loliAlarm").checked,
+        gallerieSeiten: parseInt(document.getElementById("gallerieseiten").value)
+      }
+
+      objekt = JSON.stringify(objekt);
+
+      fs.writeFileSync(`${__dirname}/einstellungen.json`, objekt);
+
+      PopupEntf();
+    }
+  })
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "einstLoeschen") {
+      if (fs.existsSync(`${__dirname}/einstellungen.json`)) {
+        fs.unlinkSync(`${__dirname}/einstellungen.json`);
+      }
+
+      PopupEntf();
+
+      document.getElementById("settings").click();
+    }
   })
 
   // Neue Version herunterladen
