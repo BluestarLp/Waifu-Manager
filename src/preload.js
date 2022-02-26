@@ -28,8 +28,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   Einstellungen();
 
-  console.log(`Diese App kommt aus dem Ordner: ${__dirname}`)
-
   function scrollToElement(element) {
     element.scrollIntoView({block: "start", behavior: "smooth"});
   }
@@ -146,8 +144,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("popup").style.display = "block";
     document.getElementById("Versionsdetails").style.display = "flex";
 
-    console.log(VersionDatei);
-
     document.querySelector(".UpdateName").innerText = VersionDatei.UpdateName;
     document.querySelector(".Versionsbeschreibung").innerText = VersionDatei.Notizen;
     document.querySelector(".Version").innerText = `Version: ${VersionDatei.Version}`;
@@ -171,8 +167,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const antwort = await fetch(GithubUrl);
 
     const daten = await antwort.json();
-
-    console.log(daten);
 
     const Version = JSON.parse(fs.readFileSync(`${__dirname}/Version.json`));
 
@@ -214,8 +208,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         <progress id="downloadBar" value="0" max="100"></progress>
         <div id="downloadStatus" style="text-align: center;">0%</div>
       `;
-
-      console.log(asset);
 
       fs.mkdirSync(`${__dirname}/Update/Extrahiert/`, { recursive: true });
 
@@ -376,7 +368,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
       let contentWrapper = document.querySelector(".contentWrapper");
       if (contentWrapper.classList.contains("waifuL")) {
-        console.log("Sie sind bereits auf dieser Seite!");
+
       } else {
         // Neue Seite + Waifu Array
         contentContainer.innerHTML = data;
@@ -395,8 +387,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let waifus = fs.readdirSync(pfad);
         let i = Math.floor(Math.random() * waifus.length);
         let waifu = pfad + waifus[i] + "/";
-        
-        console.log(waifu);
 
         let daten = fs.readFileSync(waifu + "daten.json", "utf-8", (err, data) => {
           return data;
@@ -456,7 +446,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     let monat = datum.slice(erstesMinus + 1, zweitesMinus);
     let tag = datum.slice(zweitesMinus + 1);
     let NeuesDatum = tag + "." + monat + "." + jahr;
-    console.log(NeuesDatum);
     return NeuesDatum;
   }
 
@@ -491,7 +480,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       let Favorit = (daten.favorit === true) ? "Ja" : "Nein";
       let Farbe = (daten.farbe === false) ? "k. A." : `<div style='background-color: ${daten.farbe}; height: 100%; width: 50%;'></div>`;
       let Beschreibung = daten.beschreibung;
-      console.log(daten);
       let inhalt = `
         <div class="contentWrapper viewWaifu" style="--akzentFarbe: var(--backgroundColor);">
           <div class='MeldungWaifuWrapper' style='display: none;'>
@@ -566,7 +554,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         </div>
         `;
       contentContainer.innerHTML = inhalt;
-      console.log(a);
   }
 
   contentContainer.addEventListener("click", (e) => {
@@ -589,7 +576,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   ipcRenderer.on("bilderSpeichern", (e, arg) => {
     arg = JSON.parse(arg);
-    console.log(arg);
 
     let alteBilder = fs.readdirSync(`${__dirname}/waifus/${arg.waifu}/bilder/`);
 
@@ -799,23 +785,18 @@ document.addEventListener("DOMContentLoaded", (event) => {
           tierlist: false
         };
 
-        console.log(obj);
         let daten = JSON.stringify(obj);
-        console.log(daten);
         let folder = `${__dirname}/waifus/${obj.vorname.toLowerCase()}-${obj.nachname.toLowerCase()}`;
-        console.log(folder);
 
         if (document.querySelector('.speichern').classList.contains('bearbeiten') != true) {
 
           if (fs.existsSync(folder)) {
-            console.log("Ordner existiert bereits!");
             ErrorHandling(1);
           } else {
             fs.mkdir(folder, { recursive: true }, (err) => {
               if (err) {
                 console.error(err);
               } else {
-                console.log("Ordner erstellt!");
                 fs.mkdirSync(folder + "/bilder", (err) => {
                   if (err) {
                     console.error(err);
@@ -844,7 +825,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
           let profilbildTest = profilbild.substr(profilbild.length - 10); // = index.html, da src = ""
 
           if (profilbildTest != "index.html") {
-            console.log(profilbild);
             var bild = profilbild.replace(/^data:image\/\w+;base64,/, "");
 
             let bildpfad = folder + "/profilbild.png";
@@ -857,7 +837,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             });
             ClickWaifuList();
           } else {
-            console.log("Kein Bild hinzugefügt!");
             ClickWaifuList();
           }
         }
@@ -903,7 +882,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }       
         
       } else {
-        console.log("Pflichtfelder nicht ausgefüllt");
         ErrorHandling(0);
       }
     }
@@ -974,12 +952,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     
     let e = seiten - 1; 
     let d = bilderanzahl * e;
-    console.log(seiten);
 
     let bilderErsteSeite = (bilder.length > bilderanzahl) ? bilderanzahl : bilder.length;
 
     for (let a = 0; a < seiten; a++) {
-      console.log("a = " + a);
       
       let c = (a === e) ? bilder.length - d : bilderanzahl; //Letzte Seite
       let bilderProSeite = (seiten === 1) ? bilder.length : c; //Bilder pro Seite
@@ -1002,7 +978,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       `;
       
       let row = document.querySelectorAll(".row");
-      console.log(row);
       
       for (let b = 0; b < bilderProSeite; b++) {
         
@@ -1013,7 +988,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
           row[x].innerHTML += `<img src="${bilder[i]}" style="var('--opacity', 0)">`;
         }
         
-        console.log(b);
         i++
         if (x === 3 + 4 * a) {
           x = (3 + 4 * a) - 3; 
@@ -1029,7 +1003,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     let pages = document.querySelectorAll(".bilderWrapper");
     let pageNumber = pages.length;
     let anzahlSeiten = "";
-    console.log("Anzahl Seiten: " + pageNumber);
 
     document.querySelector(".seitenzahlen").innerHTML = "";
     if (pageNumber > 5) {
@@ -1046,7 +1019,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
       </div>
       `;
     } else {
-      console.log("5 oder weniger Seiten!"); 
 
       for (let i = 0; i < pageNumber; i++) {
         anzahlSeiten = anzahlSeiten + `<button class='standard-button seite'>${i + 1}</button>`;
@@ -1087,7 +1059,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
               Seitenzahl[5].classList.remove('active');
               Seitenzahl[4].classList.add('active');
               Seitenwechsel(Seitenzahl[4].innerHTML);
-              console.log("Von 5 aus!");
             } else if (Seitenzahl[4].classList.contains('active')) {
 
               Seitenzahl[4].classList.remove('active');
@@ -1188,7 +1159,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
   // Seitenwechsel Gallerie
 
   function Seitenwechsel(seite) {
-    console.log(seite);
     document.querySelector(".imageArea").style.setProperty("--transform", ((seite - 1) * 100) * -1 + "%");    
     document.querySelector('.gallerie').scrollTop = 0;
     setTimeout(() => {
@@ -1240,14 +1210,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
         item.addEventListener('dragstart', () => {
           draggedItem = item;
-          console.log('START');
           setTimeout(() => {
             item.style.display = 'none';
           },0)
         })
 
         item.addEventListener('dragend', () => {
-          console.log('ENDE');
           setTimeout(()=> {
             draggedItem.style.display = 'block';
             draggedItem = null;
