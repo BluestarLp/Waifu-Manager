@@ -112,6 +112,12 @@ input {
   margin: 0;
 }
 
+.warnungStyle {
+  color: rgb(245, 89, 89);
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
 /* Menüband */
 
 header:not(#contentContainer header) {
@@ -373,7 +379,7 @@ Menü + Info Popup
   display: none;
 }
 
-#popup span {
+#popup #close {
   position: absolute;
   top: 5px;
   right: 5px;

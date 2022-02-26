@@ -10,13 +10,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const contentContainer = document.getElementById("contentContainer");
 
-  if (fs.existsSync(`${__dirname}/benutzer-einstellungen.json`)) {
-    const einstellungen = JSON.parse(fs.readFileSync(`${__dirname}/benutzer-einstellungen.json`));
-  } else {
-    const einstellungen = JSON.parse(fs.readFileSync(`${__dirname}/standard-einstellungen.json`));
+  //Funktionen
+  let einstobjekt;
+
+  function Einstellungen() {
+
+    if (fs.existsSync(`${__dirname}/einstellungen.json`)) {
+      einstobjekt = fs.readFileSync(`${__dirname}/einstellungen.json`);
+    } else {
+      einstobjekt = fs.readFileSync(`${__dirname}/standard-einstellungen.json`);
+    }
+
+    einstobjekt = JSON.parse(einstobjekt);
+
+    return einstobjekt;
   }
 
-  //Funktionen
+  Einstellungen();
 
   console.log(`Diese App kommt aus dem Ordner: ${__dirname}`)
 
@@ -32,6 +42,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
     for (let i = 0; i < innereElemente.length; i++) {
       innereElemente[i].style.display = "none";
     }
+  }
+
+  function Loli_Alarm() {
+    if (document.getElementById("alter").value < 14) {
+      document.getElementById("alter").parentNode.querySelector(".warnungStyle").style.display = "block";
+    }
+
+    document.getElementById("alter").addEventListener("input", () => {
+      if (document.getElementById("alter").value < 14) {
+        document.getElementById("alter").parentNode.querySelector(".warnungStyle").style.display = "block";
+      } else {
+        document.getElementById("alter").parentNode.querySelector(".warnungStyle").style.display = "none";
+      }
+    })
   }
 
     // Alle Datein in einem Ordner
@@ -95,6 +119,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       fs.writeFileSync(`${__dirname}/einstellungen.json`, objekt);
 
       PopupEntf();
+
+      Einstellungen();
     }
   })
 
@@ -105,6 +131,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       }
 
       PopupEntf();
+
+      Einstellungen();
 
       document.getElementById("settings").click();
     }
@@ -167,8 +195,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
   }
 
-  UpdateCheck();
-  
+  if (einstobjekt.autoUpdates) {
+    UpdateCheck();
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "checkForUpdate") {
+      UpdateCheck();
+    }
+  })
 
   async function AppAktualisieren(daten, Version) {
 
@@ -685,6 +720,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         return;
       }
       contentContainer.innerHTML = data;
+
+      document.getElementById("bildanzahl").value = einstobjekt.gallerieSeiten;
     });
   });
 
@@ -699,6 +736,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
         contentContainer.innerHTML = data;
         document.querySelector(".active").classList.remove("active");
         document.getElementById("waifuListe").classList.add("active");
+
+        Loli_Alarm();
       });
     }
   });
@@ -896,6 +935,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
       document.getElementById("beschreibung").value = daten.beschreibung.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
 
       document.querySelector('.speichern').classList.add('bearbeiten');
+
+      Loli_Alarm();
     }
   })
 
